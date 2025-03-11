@@ -4,7 +4,7 @@ services:
             context: ./docker/local/8.3
             dockerfile: Dockerfile
             args:
-                WWWGROUP: '${WWWGROUP}'
+                WWWGROUP: '${WWWGROUP:-1000}'
         ports:
             - '${FORWARD_WEB_PORT:-8083}:80'
         image: sail-8.3/app
