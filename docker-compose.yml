@@ -200,7 +200,7 @@ services:
             test: ["CMD", "curl", "--silent", "--fail", "http://localhost:3000/health"]
 networks:
     reverse-proxy:
-        name: "${NETWORK_NAME}"
+        name: "reverse-proxy-docker-traefik_routing"
         external: true
     sail:
         driver: bridge
