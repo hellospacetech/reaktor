@@ -44,6 +44,8 @@ services:
             - reverse-proxy
         depends_on:
             - pgsql
+        dns:
+            - 8.8.8.8
     pgsql:
         image: 'postgres:15'
         ports:
