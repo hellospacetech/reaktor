@@ -133,7 +133,7 @@ services:
     minio:
         image: 'minio/minio:latest'
         ports:
-            - "${MINIO_API_PORT:-9000}:9000"
+            - "${MINIO_API_PORT:-9100}:9000"
             - "${MINIO_CONSOLE_PORT:-8900}:8900"
         environment:
             MINIO_BROWSER_REDIRECT_URL: 'https://${NGINX_HOST_NAME}'
