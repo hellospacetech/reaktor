@@ -135,7 +135,8 @@ services:
     minio:
         image: 'minio/minio:latest'
         ports:
-            - "${FORWARD_MINIO_PORT:-9001}:9000"
+            - "${MINIO_API_PORT:-9000}:9000"
+            - "${MINIO_CONSOLE_PORT:-8900}:8900"
         environment:
             MINIO_BROWSER_REDIRECT_URL: 'https://${NGINX_HOST_NAME}'
             MINIO_ROOT_USER: 'sail'
@@ -145,7 +146,7 @@ services:
         networks:
             - reverse-proxy
             - sail
-        command: minio server /data/minio --console-address ":8900"
+        command: minio server /data/minio --console-address ":${MINIO_CONSOLE_PORT:-8900}"
         healthcheck:
             test: [ "CMD", "mc", "ready", "local" ]
             interval: 5s
