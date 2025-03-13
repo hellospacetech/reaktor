@@ -84,11 +84,11 @@ const switchToTeam = (organization: Organization) => {
                     Billing
                 </DropdownLink>
 
-                <DropdownLink
+                <!-- <DropdownLink
                     v-if="page.props.jetstream.canCreateTeams"
                     :href="route('teams.create')">
                     Create new organization
-                </DropdownLink>
+                </DropdownLink> -->
 
                 <!-- Organization Switcher -->
                 <template v-if="page.props.auth.user.all_teams.length > 1">
