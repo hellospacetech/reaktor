@@ -30,6 +30,7 @@ export default typescriptEslint.config(
             "@typescript-eslint/no-unused-vars": "off",
             "unused-imports/no-unused-imports": "error",
             "unused-imports/no-unused-vars": "error",
+            "vue/require-prop-types": "off"
         },
     },
     eslintConfigPrettier
