@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import type { Member, UpdateMemberBody } from '@/packages/api/src';
 import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import { type MemberBillableKey, useMembersStore } from '@/utils/useMembers';
@@ -9,7 +9,6 @@ import BillableRateInput from '@/packages/ui/src/Input/BillableRateInput.vue';
 import InputLabel from '@/packages/ui/src/Input/InputLabel.vue';
 import MemberBillableRateModal from '@/Components/Common/Member/MemberBillableRateModal.vue';
 import MemberBillableSelect from '@/Components/Common/Member/MemberBillableSelect.vue';
-import { onMounted, watch } from 'vue';
 import MemberRoleSelect from '@/Components/Common/Member/MemberRoleSelect.vue';
 import MemberOwnershipTransferConfirmModal from '@/Components/Common/Member/MemberOwnershipTransferConfirmModal.vue';
 import { getOrganizationCurrencyString } from '@/utils/money';
@@ -23,8 +22,7 @@ const props = defineProps<{
 }>();
 
 const memberBody = ref<UpdateMemberBody>({
-    // @ts-expect-error - The role value is always valid
-    role: props.member.role,
+    role: props.member.role as UpdateMemberBody['role'],
     billable_rate: props.member.billable_rate,
 });
 
@@ -79,7 +77,9 @@ watch(billableRateSelect, () => {
     }
 });
 
-const roleDescriptionTexts = {
+type RoleKey = 'owner' | 'admin' | 'manager' | 'employee' | 'placeholder';
+
+const roleDescriptionTexts: Record<RoleKey, string> = {
     'owner':
         'The owner has full access of the organization. The owner is the only role that can: delete the organization, transfer the ownership to another user and access to the billing settings',
     'admin':
@@ -97,9 +97,24 @@ const roleDescription = computed(() => {
         memberBody.value.role &&
         memberBody.value.role in roleDescriptionTexts
     ) {
-        return roleDescriptionTexts[memberBody.value.role];
+        return roleDescriptionTexts[memberBody.value.role as RoleKey];
     }
     return '';
+});
+
+defineExpose({
+    saving,
+    showBillableRateModal,
+    member: props.member,
+    memberBody,
+    submitBillableRate,
+    showOwnershipTransferConfirmModal,
+    submit,
+    show,
+    saveWithChecks,
+    billableRateSelect,
+    roleDescription,
+    getOrganizationCurrencyString
 });
 </script>
 
@@ -140,9 +155,7 @@ const roleDescription = computed(() => {
                         <div>
                             <InputLabel for="billableType" value="Billable" />
                             <MemberBillableSelect
-                                v-model="
-                                    billableRateSelect
-                                "
+                                v-model="billableRateSelect"
                                 class="mt-2"
                                 name="billableType"></MemberBillableSelect>
                         </div>
@@ -154,9 +167,7 @@ const roleDescription = computed(() => {
                                 class="mb-2"
                                 value="Billable Rate" />
                             <BillableRateInput
-                                v-model="
-                                    memberBody.billable_rate
-                                "
+                                v-model="memberBody.billable_rate"
                                 focus
                                 class="w-full"
                                 :currency="getOrganizationCurrencyString()"

@@ -1,22 +1,41 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.json",
   "exclude": [
-    "vendor/**/*"
+    "vendor/**/*",
+    "node_modules"
   ],
   "compilerOptions": {
     "paths": {
-      "@/*": ["./resources/js/*"],
-    }
+      "@/*": ["./resources/js/*"]
+    },
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "allowJs": true,
+    "baseUrl": ".",
+    // Remove problematic types array and let TypeScript find them automatically
+    // "types": ["vite/client", "vue"],
+    
+    // Prevent TypeScript from trying to emit files
+    "noEmit": true,
+    
+    // Set outDir to prevent overwriting input files
+    "outDir": "./dist"
   },
-  "skipLibCheck": true,
   "typeRoots": [
     "./node_modules/@types",
-    "resources/js/types",
+    "resources/js/types"
   ],
   "include": [
     "resources/js/**/*.ts",
     "resources/js/**/*.d.ts",
     "resources/js/**/*.vue",
-    "resources/js/ziggy.d.ts",
-  ]
+    "resources/js/ziggy.d.ts"
+, "resources/js/ziggy.js"  ]
 }
