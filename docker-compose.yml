@@ -49,8 +49,6 @@ services:
             - 8.8.8.8
     pgsql:
         image: 'postgres:15'
-        ports:
-            - '${FORWARD_DB_PORT:-5440}:5432'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
@@ -74,8 +72,6 @@ services:
             timeout: 5s
     pgsql_test:
         image: 'postgres:15'
-        ports:
-            - '${FORWARD_DB_TEST_PORT:-5441}:5432'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
