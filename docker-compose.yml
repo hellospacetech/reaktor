@@ -136,7 +136,7 @@ services:
         ports:
             - "9000:9000"
         environment:
-            MINIO_BROWSER_REDIRECT_URL: 'https://s3.${NGINX_HOST_NAME}'
+            MINIO_BROWSER_REDIRECT_URL: 'https://${NGINX_HOST_NAME}'
             MINIO_ROOT_USER: 'sail'
             MINIO_ROOT_PASSWORD: 'password'
         volumes:
