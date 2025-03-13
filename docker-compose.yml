@@ -135,7 +135,7 @@ services:
     minio:
         image: 'minio/minio:latest'
         ports:
-            - "9000:9000"
+            - "${FORWARD_MINIO_PORT:-9001}:9000"
         environment:
             MINIO_BROWSER_REDIRECT_URL: 'https://${NGINX_HOST_NAME}'
             MINIO_ROOT_USER: 'sail'
