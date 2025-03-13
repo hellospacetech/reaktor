@@ -50,7 +50,7 @@ services:
     pgsql:
         image: 'postgres:15'
         ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
+            - '${FORWARD_DB_PORT:-5433}:5432'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
@@ -74,6 +74,8 @@ services:
             timeout: 5s
     pgsql_test:
         image: 'postgres:15'
+        ports:
+            - '${FORWARD_DB_TEST_PORT:-5434}:5432'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
