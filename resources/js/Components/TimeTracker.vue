@@ -118,16 +118,16 @@ const { tags } = storeToRefs(useTagsStore());
         <TimeTrackerControls
             v-model:current-time-entry="currentTimeEntry"
             v-model:live-timer="now"
-            :create-project
+            :create-project="createProject"
             :enable-estimated-time="isAllowedToPerformPremiumAction()"
             :can-create-project="canCreateProjects()"
-            :create-client
-            :clients
-            :tags
-            :tasks
-            :projects
-            :create-tag
-            :is-active
+            :create-client="createClient"
+            :clients="clients"
+            :tags="tags"
+            :tasks="tasks"
+            :projects="projects"
+            :create-tag="createTag"
+            :is-active="isActive"
             :currency="getOrganizationCurrencyString()"
             @start-live-timer="startLiveTimer"
             @stop-live-timer="stopLiveTimer"

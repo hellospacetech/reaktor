@@ -45,8 +45,8 @@ import { isAllowedToPerformPremiumAction } from '@/utils/billing';
 <template>
     <ProjectCreateModal
         v-model:show="showCreateProjectModal"
-        :create-project
-        :create-client
+        :create-project="createProject"
+        :create-client="createClient"
         :currency="getOrganizationCurrencyString()"
         :clients="clients"
         :enable-estimated-time="isAllowedToPerformPremiumAction"></ProjectCreateModal>

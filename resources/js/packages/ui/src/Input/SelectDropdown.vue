@@ -159,7 +159,7 @@ watch(open, () => {
             ) as HTMLElement;
             dropdownViewport.value?.scrollTo({
                 top: highlightedDomElement?.offsetTop ?? 0,
-                behavior: 'instant',
+                behavior: 'auto',
             });
         });
     }

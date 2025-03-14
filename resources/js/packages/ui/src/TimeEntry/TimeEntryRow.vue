@@ -110,16 +110,16 @@ function onSelectChange(event: Event) {
                         "
                         @changed="updateTimeEntryDescription"></TimeEntryDescriptionInput>
                     <TimeTrackerProjectTaskDropdown
-                        :create-project
-                        :create-client
-                        :can-create-project
-                        :clients
+                        :create-project="props.createProject"
+                        :create-client="props.createClient"
+                        :can-create-project="props.canCreateProject"
+                        :clients="clients"
                         :projects="projects"
                         :tasks="tasks"
                         :show-badge-border="false"
                         :project="timeEntry.project_id"
                         :currency="currency"
-                        :enable-estimated-time
+                        :enable-estimated-time="enableEstimatedTime"
                         :task="
                             timeEntry.task_id
                         "
@@ -131,7 +131,7 @@ function onSelectChange(event: Event) {
                         {{ memberName }}
                     </div>
                     <TimeEntryRowTagDropdown
-                        :create-tag
+                        :create-tag="createTag"
                         :tags="tags"
                         :model-value="timeEntry.tags"
                         @changed="updateTimeEntryTags"></TimeEntryRowTagDropdown>
@@ -147,7 +147,7 @@ function onSelectChange(event: Event) {
                             class="hidden lg:block"
                             :start="timeEntry.start"
                             :end="timeEntry.end"
-                            :show-date
+                            :show-date="showDate"
                             @changed="
                                 updateStartEndTime
                             "></TimeEntryRangeSelector>

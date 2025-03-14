@@ -345,7 +345,7 @@ const tableData = computed(() => {
                     </ClientMultiselectDropdown>
                     <TagDropdown
                         v-model="selectedTags"
-                        :create-tag
+                        :create-tag="createTag"
                         :tags="tags"
                         @submit="updateReporting">
                         <template #trigger>

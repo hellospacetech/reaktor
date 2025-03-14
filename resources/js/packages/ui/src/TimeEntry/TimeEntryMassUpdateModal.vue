@@ -156,16 +156,16 @@ type SelectOption = { label: string; value: string };
                     <TimeTrackerProjectTaskDropdown
                         v-model:project="projectId"
                         v-model:task="taskId"
-                        :clients
-                        :create-project
-                        :create-client
+                        :clients="props.clients"
+                        :create-project="props.createProject"
+                        :create-client="props.createClient"
                         :currency="currency"
-                        :can-create-project
+                        :can-create-project="canCreateProject"
                         class="mt-1"
                         empty-placeholder="Select project..."
                         allow-reset
                         size="xlarge"
-                        :enable-estimated-time
+                        :enable-estimated-time="enableEstimatedTime"
                         :projects="projects"
                         :tasks="tasks"></TimeTrackerProjectTaskDropdown>
                 </div>
@@ -174,7 +174,7 @@ type SelectOption = { label: string; value: string };
                     <div class="flex space-x-5">
                         <TagDropdown
                             v-model="selectedTags"
-                            :create-tag
+                            :create-tag="props.createTag"
                             :tags="tags">
                             <template #trigger>
                                 <Badge

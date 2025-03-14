@@ -111,7 +111,7 @@ async function submitBillableRate() {
                     <InputLabel for="client" value="Client" />
                     <ClientDropdown
                         v-model="project.client_id"
-                        :create-client
+                        :create-client="createClient"
                         :clients="clients"
                         class="mt-1">
                         <template #trigger>

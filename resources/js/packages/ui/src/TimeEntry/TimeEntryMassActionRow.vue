@@ -9,7 +9,7 @@ import type {
     Project,
     Tag,
     Task,
-    TimeEntry,
+    TimeEntry,                                                                                                                    
     UpdateMultipleTimeEntriesChangeset,
 } from '@/packages/api/src';
 import { ref } from 'vue';
@@ -48,17 +48,17 @@ const showMassUpdateModal = ref(false);
 <template>
     <TimeEntryMassUpdateModal
         v-model:show="showMassUpdateModal"
-        :projects
-        :tasks
-        :tags
-        :clients
-        :create-tag
-        :create-project
-        :create-client
-        :update-time-entries
-        :enable-estimated-time
-        :can-create-project
-        :currency
+        :projects="projects"
+        :tasks="tasks"
+        :tags="tags"
+        :clients="clients"
+        :create-tag="createTag"
+        :create-project="createProject"
+        :create-client="createClient"
+        :update-time-entries="updateTimeEntries"
+        :enable-estimated-time="enableEstimatedTime"
+        :can-create-project="canCreateProject"
+        :currency="currency"
         :time-entries="selectedTimeEntries"
         @submit="emit('submit')"></TimeEntryMassUpdateModal>
     <MainContainer

@@ -133,51 +133,29 @@ type BillableOption = {
             <div class="sm:flex items-end space-y-2 sm:space-y-0 sm:space-x-4">
                 <div class="flex-1">
                     <TextInput
-                        id="description"
-                        ref="description"
-                        v-model="timeEntry.description"
-                        placeholder="What did you work on?"
-                        type="text"
-                        class="mt-1 block w-full"
+id="description" ref="description" v-model="timeEntry.description"
+                        placeholder="What did you work on?" type="text" class="mt-1 block w-full"
                         @keydown.enter="submit" />
                 </div>
             </div>
-            <div
-                class="sm:flex justify-between items-end space-y-2 sm:space-y-0 pt-4 sm:space-x-4">
+            <div class="sm:flex justify-between items-end space-y-2 sm:space-y-0 pt-4 sm:space-x-4">
                 <div class="flex w-full items-center space-x-2 justify-between">
                     <div class="flex-1 min-w-0">
                         <TimeTrackerProjectTaskDropdown
-                            v-model:project="timeEntry.project_id"
-                            v-model:task="
-                                timeEntry.task_id
-                            "
-                            :clients
-                            :create-project
-                            :create-client
-                            :can-create-project="canCreateProjects()"
-                            :currency="getOrganizationCurrencyString()"
-                            size="xlarge"
-                            class="bg-input-background"
-                            :projects="projects"
-                            :tasks="tasks"
+v-model:project="timeEntry.project_id" v-model:task="timeEntry.task_id
+                            " :clients="clients" :create-project="createProject" :create-client="createClient"
+                            :can-create-project="canCreateProjects()" :currency="getOrganizationCurrencyString()"
+                            size="xlarge" class="bg-input-background" :projects="projects" :tasks="tasks"
                             :enable-estimated-time="enableEstimatedTime"></TimeTrackerProjectTaskDropdown>
                     </div>
                     <div class="flex items-center space-x-2">
                         <div class="flex-col">
-                            <TagDropdown
-                                v-model="timeEntry.tags"
-                                :create-tag
-                                :tags="tags">
+                            <TagDropdown v-model="timeEntry.tags" :create-tag="createTag" :tags="tags">
                                 <template #trigger>
-                                    <Badge
-                                        class="bg-input-background"
-                                        tag="button"
-                                        size="xlarge">
-                                        <TagIcon
-                                            v-if="timeEntry.tags.length === 0"
-                                            class="w-4"></TagIcon>
+                                    <Badge class="bg-input-background" tag="button" size="xlarge">
+                                        <TagIcon v-if="timeEntry.tags.length === 0" class="w-4"></TagIcon>
                                         <div
-                                            v-else
+v-else
                                             class="bg-accent-300/20 w-5 h-5 font-medium rounded flex items-center transition justify-center">
                                             {{ timeEntry.tags.length }}
                                         </div>
@@ -188,14 +166,9 @@ type BillableOption = {
                         </div>
                         <div class="flex-col">
                             <SelectDropdown
-                                v-model="billableProxy"
-                                :get-key-from-item="
-                                    (item: BillableOption) => item.value
-                                "
-                                :get-name-for-item="
-                                    (item: BillableOption) => item.label
-                                "
-                                :items="[
+v-model="billableProxy" :get-key-from-item="(item: BillableOption) => item.value
+                                " :get-name-for-item="(item: BillableOption) => item.label
+                                    " :items="[
                                     {
                                         label: 'Billable',
                                         value: 'true',
@@ -206,12 +179,8 @@ type BillableOption = {
                                     },
                                 ]">
                                 <template #trigger>
-                                    <Badge
-                                        class="bg-input-background"
-                                        tag="button"
-                                        size="xlarge">
-                                        <BillableIcon
-                                            class="h-4"></BillableIcon>
+                                    <Badge class="bg-input-background" tag="button" size="xlarge">
+                                        <BillableIcon class="h-4"></BillableIcon>
                                         <span>{{
                                             timeEntry.billable
                                                 ? 'Billable'
@@ -228,12 +197,9 @@ type BillableOption = {
                 <div class="flex-1">
                     <InputLabel>Duration</InputLabel>
                     <div class="space-y-2 mt-1 flex flex-col">
-                        <DurationHumanInput
-                            v-model:start="localStart"
-                            v-model:end="localEnd"></DurationHumanInput>
+                        <DurationHumanInput v-model:start="localStart" v-model:end="localEnd"></DurationHumanInput>
                         <div class="text-sm flex space-x-1">
-                            <InformationCircleIcon
-                                class="w-4 text-text-quaternary"></InformationCircleIcon>
+                            <InformationCircleIcon class="w-4 text-text-quaternary"></InformationCircleIcon>
                             <span class="text-text-secondary text-xs">
                                 You can type natural language here f.e.
                                 <span class="font-semibold"> 2h 30m</span>
@@ -244,26 +210,21 @@ type BillableOption = {
                 <div class="">
                     <InputLabel>Start</InputLabel>
                     <div class="flex flex-col items-center space-y-2 mt-1">
-                        <TimePickerSimple
-
-                            v-model="localStart"
-                            size="large"></TimePickerSimple>
+                        <TimePickerSimple v-model="localStart" size="large"></TimePickerSimple>
                         <DatePicker
-                            v-model="localStart"
-                            tabindex="1"
-                            class="text-xs text-text-tertiary max-w-28 px-1.5 py-1.5"></DatePicker>
+v-model="localStart" tabindex="1"
+                            class="text-xs text-text-tertiary max-w-28 px-1.5 py-1.5">
+                        </DatePicker>
                     </div>
                 </div>
                 <div class="">
                     <InputLabel>End</InputLabel>
                     <div class="flex flex-col items-center space-y-2 mt-1">
-                        <TimePickerSimple
-                            v-model="localEnd"
-                            size="large"></TimePickerSimple>
+                        <TimePickerSimple v-model="localEnd" size="large"></TimePickerSimple>
                         <DatePicker
-                            v-model="localEnd"
-                            tabindex="1"
-                            class="text-xs text-text-tertiary max-w-28 px-1.5 py-1.5"></DatePicker>
+v-model="localEnd" tabindex="1"
+                            class="text-xs text-text-tertiary max-w-28 px-1.5 py-1.5">
+                        </DatePicker>
                     </div>
                 </div>
             </div>
@@ -271,10 +232,7 @@ type BillableOption = {
         <template #footer>
             <SecondaryButton tabindex="2" @click="show = false"> Cancel</SecondaryButton>
             <PrimaryButton
-                tabindex="2"
-                class="ms-3"
-                :class="{ 'opacity-25': saving }"
-                :disabled="saving"
+tabindex="2" class="ms-3" :class="{ 'opacity-25': saving }" :disabled="saving"
                 @click="submit">
                 Create Time Entry
             </PrimaryButton>

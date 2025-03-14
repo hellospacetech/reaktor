@@ -119,15 +119,15 @@ function onSelectChange(event: Event) {
                             "
                             @changed="updateTimeEntryDescription"></TimeEntryDescriptionInput>
                         <TimeTrackerProjectTaskDropdown
-                            :clients
-                            :create-project
-                            :create-client
-                            :can-create-project
+                            :clients="clients"
+                            :create-project="createProject"
+                            :create-client="createClient"
+                            :can-create-project="canCreateProject"
                             :projects="projects"
                             :tasks="tasks"
                             :show-badge-border="false"
                             :project="timeEntry.project_id"
-                            :enable-estimated-time
+                            :enable-estimated-time="enableEstimatedTime"
                             :currency="currency"
                             :task="
                                 timeEntry.task_id
@@ -137,8 +137,7 @@ function onSelectChange(event: Event) {
                 </div>
                 <div class="flex items-center font-medium lg:space-x-2">
                     <TimeEntryRowTagDropdown
-                        :create-tag
-                        :tags="tags"
+                    :create-tag="createTag"                        :tags="tags"
                         :model-value="timeEntry.tags"
                         @changed="updateTimeEntryTags"></TimeEntryRowTagDropdown>
                     <BillableToggleButton
@@ -181,8 +180,8 @@ function onSelectChange(event: Event) {
                 v-for="subEntry in timeEntry.timeEntries"
                 :key="subEntry.id"
                 :projects="projects"
-                :enable-estimated-time
-                :can-create-project
+                :enable-estimated-time="enableEstimatedTime"
+                :can-create-project="canCreateProject"
                 :tasks="tasks"
                 :selected="
                     !!selectedTimeEntries.find(
@@ -190,9 +189,9 @@ function onSelectChange(event: Event) {
                             filterEntry.id === subEntry.id
                     )
                 "
-                :create-client
-                :clients
-                :create-project
+                :create-client="createClient"
+                :clients="clients"
+                :create-project="createProject"
                 :tags="tags"
                 indent
                 :update-time-entry="
@@ -201,8 +200,7 @@ function onSelectChange(event: Event) {
                 :on-start-stop-click="() => onStartStopClick(subEntry)"
                 :delete-time-entry="() => deleteTimeEntries([subEntry])"
                 :currency="currency"
-                :create-tag
-                :time-entry="subEntry"
+                :create-tag="createTag"                :time-entry="subEntry"
                 @selected="emit('selected', [subEntry])"
                 @unselected="emit('unselected', [subEntry])"></TimeEntryRow>
         </div>

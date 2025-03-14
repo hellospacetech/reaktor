@@ -31,7 +31,7 @@ export const useInvitationsStore = defineStore('invitations', () => {
 
     async function createInvitation(
         inviteBody: CreateInvitationBody
-    ): Promise<undefined> {
+    ): Promise<void> {
         const organization = getCurrentOrganizationId();
         if (organization) {
             await handleApiRequestNotifications(

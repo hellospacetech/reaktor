@@ -724,11 +724,12 @@ const showCreateProject = ref(false);
     </Dropdown>
     <ProjectCreateModal
         v-model:show="showCreateProject"
-        :create-client
+        :create-client="createClient"
         :enable-estimated-time="enableEstimatedTime"
         :currency="currency"
         :clients="clients"
-        :create-project></ProjectCreateModal>
+        :create-project="createProject"
+        ></ProjectCreateModal>
 </template>
 
 <style scoped></style>

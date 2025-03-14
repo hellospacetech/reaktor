@@ -162,20 +162,20 @@ function unselectAllTimeEntries(value: TimeEntriesGroupedByType[]) {
         <template v-for="entry in value" :key="entry.id">
             <TimeEntryAggregateRow
                 v-if="'timeEntries' in entry && entry.timeEntries.length > 1"
-                :create-project
-                :can-create-project
-                :enable-estimated-time
+                :create-project="createProject"
+                :can-create-project="canCreateProject"
+                :enable-estimated-time="enableEstimatedTime"
                 :selected-time-entries="selectedTimeEntries"
-                :create-client
+                :create-client="createClient"
                 :projects="projects"
                 :tasks="tasks"
                 :tags="tags"
-                :clients
+                :clients="clients"
                 :on-start-stop-click="startTimeEntryFromExisting"
-                :update-time-entries
-                :update-time-entry
-                :delete-time-entries
-                :create-tag
+                :update-time-entries="updateTimeEntries"
+                :update-time-entry="updateTimeEntry"
+                :delete-time-entries="deleteTimeEntries"
+                :create-tag="createTag"
                 :currency="currency"
                 :time-entry="entry"
                 @selected="
@@ -199,10 +199,10 @@ function unselectAllTimeEntries(value: TimeEntriesGroupedByType[]) {
                 "></TimeEntryAggregateRow>
             <TimeEntryRow
                 v-else
-                :create-client
-                :enable-estimated-time
-                :can-create-project
-                :create-project
+                :create-client="createClient"
+                :enable-estimated-time="enableEstimatedTime"
+                :can-create-project="canCreateProject"
+                :create-project="createProject"
                 :projects="projects"
                 :selected="
                     !!selectedTimeEntries.find(
@@ -211,9 +211,9 @@ function unselectAllTimeEntries(value: TimeEntriesGroupedByType[]) {
                 "
                 :tasks="tasks"
                 :tags="tags"
-                :clients
-                :create-tag
-                :update-time-entry
+                :clients="clients"
+                :create-tag="createTag"
+                :update-time-entry="updateTimeEntry"
                 :on-start-stop-click="() => startTimeEntryFromExisting(entry)"
                 :delete-time-entry="() => deleteTimeEntries([entry])"
                 :currency="currency"

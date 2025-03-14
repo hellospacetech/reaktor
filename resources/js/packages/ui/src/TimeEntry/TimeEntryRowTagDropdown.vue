@@ -26,7 +26,7 @@ const timeEntryTags = computed<Tag[]>(() => {
         v-model="model"
         :tags="tags"
         align="bottom-end"
-        :create-tag
+        :create-tag="createTag"
         @changed="emit('changed', model)">
         <template #trigger>
             <button

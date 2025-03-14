@@ -95,9 +95,9 @@ const showBillableRate = computed(() => {
             </SecondaryButton>
             <ProjectCreateModal
                 v-model:show="showCreateProjectModal"
-                :create-project
+                :create-project="createProject"
                 :enable-estimated-time="isAllowedToPerformPremiumAction"
-                :create-client
+                :create-client="createClient"
                 :currency="getOrganizationCurrencyString()"
                 :clients="clients"
                 @submit="createProject"></ProjectCreateModal>

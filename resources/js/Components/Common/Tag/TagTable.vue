@@ -20,7 +20,8 @@ const showCreateTagModal = ref(false);
 <template>
     <TagCreateModal
         v-model:show="showCreateTagModal"
-        :create-tag></TagCreateModal>
+        :create-tag="createTag"
+        ></TagCreateModal>
     <div class="flow-root">
         <div class="inline-block min-w-full align-middle">
             <div

@@ -174,16 +174,16 @@ function deleteSelected() {
             @unselect-all="selectedTimeEntries = []"></TimeEntryMassActionRow>
         <TimeEntryGroupedTable
             v-model:selected="selectedTimeEntries"
-            :create-project
+            :create-project="createProject"
             :enable-estimated-time="isAllowedToPerformPremiumAction()"
             :can-create-project="canCreateProjects()"
-            :clients
-            :create-client
-            :update-time-entry
-            :update-time-entries
-            :delete-time-entries
+            :clients="clients"
+            :create-client="createClient"
+            :update-time-entry="updateTimeEntry"
+            :update-time-entries="updateTimeEntries"
+            :delete-time-entries="deleteTimeEntries"
             :create-time-entry="startTimeEntry"
-            :create-tag
+            :create-tag="createTag"
             :projects="projects"
             :tasks="tasks"
             :currency="getOrganizationCurrencyString()"

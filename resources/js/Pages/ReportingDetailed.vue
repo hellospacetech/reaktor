@@ -314,7 +314,7 @@ async function downloadExport(format: ExportFormat) {
                     </ClientMultiselectDropdown>
                     <TagDropdown
                         v-model="selectedTags"
-                        :create-tag
+                        :create-tag="createTag"
                         :tags="tags"
                         @submit="updateFilteredTimeEntries">
                         <template #trigger>
@@ -394,15 +394,15 @@ async function downloadExport(format: ExportFormat) {
                 <TimeEntryRow
                     :selected="selectedTimeEntries.includes(entry)"
                     :can-create-project="canCreateProjects()"
-                    :create-client
-                    :create-project
+                    :create-client="createClient"
+                    :create-project="createProject"
                     :enable-estimated-time="isAllowedToPerformPremiumAction()"
                     :projects="projects"
                     :tasks="tasks"
                     :tags="tags"
-                    :clients
-                    :create-tag
-                    :update-time-entry
+                    :clients="clients"
+                    :create-tag="createTag"
+                    :update-time-entry="updateTimeEntry"
                     :on-start-stop-click="() => startTimeEntryFromExisting(entry)"
                     :delete-time-entry="() => deleteTimeEntries([entry])"
                     :currency="getOrganizationCurrencyString()"

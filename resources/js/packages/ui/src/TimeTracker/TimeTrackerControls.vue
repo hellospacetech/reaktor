@@ -250,10 +250,10 @@ useSelectEvents(filteredRecentlyTrackedTimeEntries,
                         v-model:task="
                             currentTimeEntry.task_id
                         "
-                        :create-client
-                        :can-create-project
-                        :clients
-                        :create-project
+                        :create-client="createClient"
+                        :can-create-project="canCreateProject"
+                        :clients="clients"
+                        :create-project="createProject"
                         :currency="currency"
                         :projects="projects"
                         :tasks="tasks"
@@ -265,7 +265,7 @@ useSelectEvents(filteredRecentlyTrackedTimeEntries,
                         v-model="
                             currentTimeEntry.tags
                         "
-                        :create-tag
+                        :create-tag="createTag"
                         :tags="tags"
                         @changed="$emit('updateTimeEntry')"></TimeTrackerTagDropdown>
                     <BillableToggleButton
