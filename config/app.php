@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'name' => 'solidtime',
+    'name' => 'hellospace',
 
     'version' => env('APP_VERSION'),
 
