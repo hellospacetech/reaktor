@@ -9,11 +9,11 @@ import { createPinia } from 'pinia';
 import type { User } from '@/types/models';
 import { VueQueryPlugin } from '@tanstack/vue-query';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Hellospace';
 const pinia = createPinia();
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `${title} - ${appName} |||||`,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
