@@ -13,7 +13,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Hellospace';
 const pinia = createPinia();
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName} |||||`,
+    title: (title) => `${title} - Hellospace`,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
