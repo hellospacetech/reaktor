@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/require-default-prop -->
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
@@ -34,7 +35,6 @@ import { isBillingActivated } from '@/utils/billing';
 import type { User } from '@/types/models';
 import { ArrowsRightLeftIcon } from '@heroicons/vue/16/solid';
 import { fetchToken, isTokenValid } from '@/utils/session';
-import UpdateSidebarNotification from '@/Components/UpdateSidebarNotification.vue';
 import BillingBanner from '@/Components/Billing/BillingBanner.vue';
 
 defineProps({
@@ -221,7 +221,6 @@ const page = usePage<{
                     </nav>
                 </div>
                 <div class="justify-self-end">
-                    <UpdateSidebarNotification></UpdateSidebarNotification>
                     <ul
                         class="border-t border-default-background-separator pt-3 flex justify-between pr-4 items-center">
                         <NavigationSidebarItem
