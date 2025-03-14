@@ -6,8 +6,8 @@ services:
             args:
                 WWWGROUP: '${WWWGROUP:-1000}'
                 WWWUSER: '${WWWUSER:-1000}'
-        ports:
-            - '${FORWARD_WEB_PORT:-8083}:80'
+        # ports:
+        #     - '${FORWARD_WEB_PORT:-8083}:80'
         image: sail-8.3/app
         labels:
             - "traefik.enable=true"
@@ -49,8 +49,8 @@ services:
             - 8.8.8.8
     pgsql:
         image: 'postgres:15'
-        ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
+        # ports:
+        #     - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
@@ -134,8 +134,8 @@ services:
             - '.:/src'
     minio:
         image: 'minio/minio:latest'
-        ports:
-            - "9000:9000"
+        # ports:
+        #     - "9000:9000"
         environment:
             MINIO_BROWSER_REDIRECT_URL: 'https://${NGINX_HOST_NAME}'
             MINIO_ROOT_USER: 'sail'
