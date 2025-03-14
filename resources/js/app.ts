@@ -9,7 +9,6 @@ import { createPinia } from 'pinia';
 import type { User } from '@/types/models';
 import { VueQueryPlugin } from '@tanstack/vue-query';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Hellospace';
 const pinia = createPinia();
 
 createInertiaApp({
