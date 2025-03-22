@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Task } from '@/packages/api/src';
-import { CheckCircleIcon } from '@heroicons/vue/20/solid';
+import { CheckCircleIcon, BeakerIcon } from '@heroicons/vue/20/solid';
 import { useTasksStore } from '@/utils/useTasks';
 import TaskMoreOptionsDropdown from '@/Components/Common/Task/TaskMoreOptionsDropdown.vue';
 import TableRow from '@/Components/TableRow.vue';
@@ -21,9 +21,26 @@ function deleteTask() {
 }
 
 function markTaskAsDone() {
+    let newStatus;
+    
+    if (props.task.status === 'internal_test') {
+        newStatus = 'done';
+    } else if (props.task.status === 'done') {
+        newStatus = 'active';
+    } else {
+        return; // Geçersiz durum geçişi
+    }
+    
     useTasksStore().updateTask(props.task.id, {
         ...props.task,
-        is_done: !props.task.is_done,
+        status: newStatus,
+    });
+}
+
+function markTaskAsInternalTest() {
+    useTasksStore().updateTask(props.task.id, {
+        ...props.task,
+        status: 'internal_test',
     });
 }
 
@@ -57,12 +74,16 @@ const showTaskEditModal = ref(false);
         </div>
         <div
             class="whitespace-nowrap px-3 py-4 text-sm text-muted flex space-x-1 items-center font-medium">
-            <template v-if="task.is_done">
+            <template v-if="task.status === 'done'">
                 <CheckCircleIcon class="w-5"></CheckCircleIcon>
-                <span>Done</span>
+                <span>{{ task.status_label }}</span>
+            </template>
+            <template v-else-if="task.status === 'internal_test'">
+                <BeakerIcon class="w-5"></BeakerIcon>
+                <span>{{ task.status_label }}</span>
             </template>
             <template v-else>
-                <span>Active</span>
+                <span>{{ task.status_label }}</span>
             </template>
         </div>
         <div
@@ -70,6 +91,7 @@ const showTaskEditModal = ref(false);
             <TaskMoreOptionsDropdown
                 v-if="canDeleteTasks()"
                 :task="task"
+                @internal-test="markTaskAsInternalTest"
                 @done="markTaskAsDone"
                 @edit="showTaskEditModal = true"
                 @delete="deleteTask"></TaskMoreOptionsDropdown>

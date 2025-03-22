@@ -3,6 +3,7 @@ import {
     TrashIcon,
     PencilSquareIcon,
     CheckCircleIcon,
+    BeakerIcon,
 } from '@heroicons/vue/20/solid';
 import type { Task } from '@/packages/api/src';
 import { canDeleteTasks, canUpdateTasks } from '@/utils/permissions';
@@ -11,6 +12,7 @@ const emit = defineEmits<{
     delete: [];
     edit: [];
     done: [];
+    'internal-test': [];
 }>();
 const props = defineProps<{
     task: Task;
@@ -31,13 +33,28 @@ const props = defineProps<{
                 <span>Edit</span>
             </button>
             <button
-                v-if="canUpdateTasks()"
+                v-if="canUpdateTasks() && props.task.status === 'active'"
+                :aria-label="'Mark Task ' + props.task.name + ' as internal test'"
+                class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
+                @click="emit('internal-test')">
+                <BeakerIcon class="w-5 text-icon-active"></BeakerIcon>
+                <span>Mark as Internal Test</span>
+            </button>
+            <button
+                v-if="canUpdateTasks() && props.task.status === 'internal_test'"
                 :aria-label="'Mark Task ' + props.task.name + ' as done'"
                 class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
                 @click="emit('done')">
                 <CheckCircleIcon class="w-5 text-icon-active"></CheckCircleIcon>
-                <span v-if="props.task.is_done">Mark as active</span>
-                <span v-else>Mark as done</span>
+                <span>Mark as Done</span>
+            </button>
+            <button
+                v-if="canUpdateTasks() && props.task.status === 'done'"
+                :aria-label="'Mark Task ' + props.task.name + ' as active'"
+                class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
+                @click="emit('done')">
+                <CheckCircleIcon class="w-5 text-icon-active"></CheckCircleIcon>
+                <span>Mark as Active</span>
             </button>
             <button
                 v-if="canDeleteTasks()"

@@ -26,6 +26,7 @@ async function submit() {
         name: taskName.value,
         project_id: props.projectId,
         estimated_time: estimatedTime.value,
+        status: 'active',
     });
     show.value = false;
     taskName.value = '';
