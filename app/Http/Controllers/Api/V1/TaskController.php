@@ -16,6 +16,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
+use App\Enums\TaskStatus;
 
 class TaskController extends Controller
 {
@@ -79,6 +80,14 @@ class TaskController extends Controller
         $task = new Task;
         $task->name = $request->input('name');
         $task->project_id = $request->input('project_id');
+        
+        // Status değerini ata
+        if ($request->has('status')) {
+            $task->status = TaskStatus::from($request->getStatus());
+        } else {
+            $task->status = TaskStatus::Active();
+        }
+        
         if ($this->canAccessPremiumFeatures($organization) && $request->has('estimated_time')) {
             $task->estimated_time = $request->getEstimatedTime();
         }
@@ -102,9 +111,29 @@ class TaskController extends Controller
         if ($this->canAccessPremiumFeatures($organization) && $request->has('estimated_time')) {
             $task->estimated_time = $request->getEstimatedTime();
         }
-        if ($request->has('is_done')) {
-            $task->done_at = $request->getIsDone() ? Carbon::now() : null;
+        
+        // Status değişikliği
+        if ($request->has('status')) {
+            $newStatus = $request->getStatus();
+            
+            if ($newStatus === TaskStatus::InternalTest && $task->status->is(TaskStatus::Active)) {
+                $this->checkPermission($organization, 'tasks:mark-as-internal-test');
+                $task->status = TaskStatus::InternalTest();
+            } 
+            elseif ($newStatus === TaskStatus::Done && $task->status->is(TaskStatus::InternalTest)) {
+                $this->checkPermission($organization, 'tasks:mark-as-done');
+                $task->status = TaskStatus::Done();
+                $task->done_at = Carbon::now();
+            }
+            elseif ($newStatus === TaskStatus::Active) {
+                $task->status = TaskStatus::Active();
+                $task->done_at = null;
+            }
+            else {
+                throw new AuthorizationException('Invalid status transition');
+            }
         }
+        
         $task->save();
 
         return new TaskResource($task);

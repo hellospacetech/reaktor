@@ -10,6 +10,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Korridor\LaravelModelValidationRules\Rules\UniqueEloquent;
+use App\Enums\TaskStatus;
 
 /**
  * @property Organization $organization Organization from model binding
@@ -35,8 +36,9 @@ class TaskUpdateRequest extends FormRequest
                     return $builder->where('project_id', '=', $this->task->project_id);
                 })->ignore($this->task?->getKey())->withCustomTranslation('validation.task_name_already_exists'),
             ],
-            'is_done' => [
-                'boolean',
+            'status' => [
+                'string',
+                'in:' . implode(',', TaskStatus::getValues()),
             ],
             // Estimated time in seconds
             'estimated_time' => [
@@ -48,17 +50,17 @@ class TaskUpdateRequest extends FormRequest
         ];
     }
 
-    public function getIsDone(): bool
-    {
-        assert($this->has('is_done'));
-
-        return $this->boolean('is_done');
-    }
-
     public function getEstimatedTime(): ?int
     {
         $input = $this->input('estimated_time');
 
         return $input !== null && $input !== 0 ? (int) $this->input('estimated_time') : null;
+    }
+
+    public function getStatus(): string
+    {
+        assert($this->has('status'));
+
+        return $this->input('status');
     }
 }
