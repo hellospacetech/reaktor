@@ -144,6 +144,7 @@ Route::prefix('v1')->name('v1.')->group(static function (): void {
             Route::get('/tasks', [TaskController::class, 'index'])->name('index');
             Route::post('/tasks', [TaskController::class, 'store'])->name('store')->middleware('check-organization-blocked');
             Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('update')->middleware('check-organization-blocked');
+            Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('update-status')->middleware('check-organization-blocked');
             Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('destroy');
         });
 

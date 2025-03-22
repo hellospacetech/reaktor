@@ -8,6 +8,7 @@ use App\Exceptions\Api\EntityStillInUseApiException;
 use App\Http\Requests\V1\Task\TaskIndexRequest;
 use App\Http\Requests\V1\Task\TaskStoreRequest;
 use App\Http\Requests\V1\Task\TaskUpdateRequest;
+use App\Http\Requests\V1\Task\TaskUpdateStatusRequest;
 use App\Http\Resources\V1\Task\TaskCollection;
 use App\Http\Resources\V1\Task\TaskResource;
 use App\Models\Organization;
@@ -83,7 +84,7 @@ class TaskController extends Controller
         
         // Status değerini ata
         if ($request->has('status')) {
-            $task->status = TaskStatus::from($request->getStatus());
+            $task->status = TaskStatus::fromValue($request->getStatus());
         } else {
             $task->status = TaskStatus::Active();
         }
@@ -107,35 +108,57 @@ class TaskController extends Controller
     public function update(Organization $organization, Task $task, TaskUpdateRequest $request): JsonResource
     {
         $this->checkPermission($organization, 'tasks:update', $task);
+        
+        // Genel güncelleme işlemleri
         $task->name = $request->input('name');
         if ($this->canAccessPremiumFeatures($organization) && $request->has('estimated_time')) {
             $task->estimated_time = $request->getEstimatedTime();
         }
         
-        // Status değişikliği
-        if ($request->has('status')) {
-            $newStatus = $request->getStatus();
-            
-            if ($newStatus === TaskStatus::InternalTest && $task->status->is(TaskStatus::Active)) {
-                $this->checkPermission($organization, 'tasks:mark-as-internal-test');
-                $task->status = TaskStatus::InternalTest();
-            } 
-            elseif ($newStatus === TaskStatus::Done && $task->status->is(TaskStatus::InternalTest)) {
-                $this->checkPermission($organization, 'tasks:mark-as-done');
-                $task->status = TaskStatus::Done();
-                $task->done_at = Carbon::now();
-            }
-            elseif ($newStatus === TaskStatus::Active) {
-                $task->status = TaskStatus::Active();
-                $task->done_at = null;
-            }
-            else {
-                throw new AuthorizationException('Invalid status transition');
-            }
+        $task->save();
+
+        return new TaskResource($task);
+    }
+    
+    /**
+     * Update task status
+     * 
+     * @throws AuthorizationException
+     * 
+     * @operationId updateTaskStatus
+     */
+    public function updateStatus(Organization $organization, Task $task, TaskUpdateStatusRequest $request): JsonResource
+    {
+        // Organizasyona ait mi kontrolü
+        if ($task->organization_id !== $organization->id) {
+            throw new AuthorizationException('Task does not belong to organization');
+        }
+        
+        $newStatus = $request->getStatus();
+        
+        if ($newStatus === TaskStatus::InternalTest && $task->status->is(TaskStatus::Active)) {
+            // Dahili test olarak işaretleme izni
+            $this->checkPermission($organization, 'tasks:mark-as-internal-test');
+            $task->status = TaskStatus::InternalTest();
+        } 
+        elseif ($newStatus === TaskStatus::Done && $task->status->is(TaskStatus::InternalTest)) {
+            // Tamamlandı olarak işaretleme izni
+            $this->checkPermission($organization, 'tasks:mark-as-done');
+            $task->status = TaskStatus::Done();
+            $task->done_at = Carbon::now();
+        }
+        elseif ($newStatus === TaskStatus::Active) {
+            // Active olarak işaretlemek için 'tasks:update' izni gerekir
+            $this->checkPermission($organization, 'tasks:update', $task);
+            $task->status = TaskStatus::Active();
+            $task->done_at = null;
+        }
+        else {
+            throw new AuthorizationException('Invalid status transition');
         }
         
         $task->save();
-
+        
         return new TaskResource($task);
     }
 
