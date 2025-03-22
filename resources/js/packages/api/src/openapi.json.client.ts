@@ -2588,6 +2588,57 @@ const endpoints = makeApi([
         ],
     },
     {
+        method: 'patch',
+        path: '/v1/organizations/:organization/tasks/:task/status',
+        alias: 'updateTaskStatus',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'body',
+                type: 'Body',
+                schema: z.object({ status: z.string() }),
+            },
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'task',
+                type: 'Path',
+                schema: z.string(),
+            },
+        ],
+        response: z.object({ data: TaskResource }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 422,
+                description: `Validation error`,
+                schema: z
+                    .object({
+                        message: z.string(),
+                        errors: z.record(z.array(z.string())),
+                    })
+                    .passthrough(),
+            },
+        ],
+    },
+    {
         method: 'delete',
         path: '/v1/organizations/:organization/tasks/:task',
         alias: 'deleteTask',

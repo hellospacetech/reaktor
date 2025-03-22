@@ -6,7 +6,7 @@ import {
     BeakerIcon,
 } from '@heroicons/vue/20/solid';
 import type { Task } from '@/packages/api/src';
-import { canDeleteTasks, canUpdateTasks } from '@/utils/permissions';
+import { canDeleteTasks, canUpdateTasks, canMarkTaskAsInternalTest, canMarkTaskAsDone } from '@/utils/permissions';
 import MoreOptionsDropdown from '@/packages/ui/src/MoreOptionsDropdown.vue';
 const emit = defineEmits<{
     delete: [];
@@ -33,7 +33,7 @@ const props = defineProps<{
                 <span>Edit</span>
             </button>
             <button
-                v-if="canUpdateTasks() && props.task.status === 'active'"
+                v-if="canMarkTaskAsInternalTest() && props.task.status === 'active'"
                 :aria-label="'Mark Task ' + props.task.name + ' as internal test'"
                 class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
                 @click="emit('internal-test')">
@@ -41,7 +41,7 @@ const props = defineProps<{
                 <span>Mark as Internal Test</span>
             </button>
             <button
-                v-if="canUpdateTasks() && props.task.status === 'internal_test'"
+                v-if="canMarkTaskAsDone() && props.task.status === 'internal_test'"
                 :aria-label="'Mark Task ' + props.task.name + ' as done'"
                 class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
                 @click="emit('done')">

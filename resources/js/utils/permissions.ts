@@ -49,6 +49,14 @@ export function canDeleteTasks() {
     return currentUserHasPermission('tasks:delete');
 }
 
+export function canMarkTaskAsInternalTest() {
+    return currentUserHasPermission('tasks:mark-as-internal-test');
+}
+
+export function canMarkTaskAsDone() {
+    return currentUserHasPermission('tasks:mark-as-done');
+}
+
 export function canCreateClients() {
     return currentUserHasPermission('clients:create');
 }

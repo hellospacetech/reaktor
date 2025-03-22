@@ -4,7 +4,7 @@ import { CheckCircleIcon, BeakerIcon } from '@heroicons/vue/20/solid';
 import { useTasksStore } from '@/utils/useTasks';
 import TaskMoreOptionsDropdown from '@/Components/Common/Task/TaskMoreOptionsDropdown.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { canDeleteTasks } from '@/utils/permissions';
+import { canDeleteTasks, canUpdateTasks, canMarkTaskAsInternalTest, canMarkTaskAsDone } from '@/utils/permissions';
 import TaskEditModal from '@/Components/Common/Task/TaskEditModal.vue';
 import { ref } from 'vue';
 import { isAllowedToPerformPremiumAction } from '@/utils/billing';
@@ -31,17 +31,11 @@ function markTaskAsDone() {
         return; // Geçersiz durum geçişi
     }
     
-    useTasksStore().updateTask(props.task.id, {
-        ...props.task,
-        status: newStatus,
-    });
+    useTasksStore().updateTaskStatus(props.task.id, newStatus);
 }
 
 function markTaskAsInternalTest() {
-    useTasksStore().updateTask(props.task.id, {
-        ...props.task,
-        status: 'internal_test',
-    });
+    useTasksStore().updateTaskStatus(props.task.id, 'internal_test');
 }
 
 const showTaskEditModal = ref(false);
@@ -89,7 +83,7 @@ const showTaskEditModal = ref(false);
         <div
             class="relative whitespace-nowrap flex items-center pl-3 text-right text-sm font-medium sm:pr-0 pr-4 sm:pr-6 lg:pr-8 3xl:pr-12">
             <TaskMoreOptionsDropdown
-                v-if="canDeleteTasks()"
+                v-if="canUpdateTasks() || canMarkTaskAsInternalTest() || canMarkTaskAsDone() || canDeleteTasks()"
                 :task="task"
                 @internal-test="markTaskAsInternalTest"
                 @done="markTaskAsDone"
