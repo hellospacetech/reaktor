@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Enums\TaskStatus;
+
 return [
-    'task_status' => [
-        'active' => 'Active',
-        'internal_test' => 'Internal Test',
-        'done' => 'Done',
+    TaskStatus::class => [
+        TaskStatus::Active => 'Active',
+        TaskStatus::InternalTest => 'Internal Test',
+        TaskStatus::Done => 'Done',
     ],
 ]; 
