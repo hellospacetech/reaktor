@@ -58,6 +58,14 @@ const props = defineProps<{
                 <span>Mark as Active</span>
             </button>
             <button
+                v-if="canMarkTaskAsInternalTest() && props.task.status === 'done'"
+                :aria-label="'Mark Task ' + props.task.name + ' as internal test'"
+                class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
+                @click="emit('internal-test')">
+                <BeakerIcon class="w-5 text-icon-active"></BeakerIcon>
+                <span>Mark as Internal Test</span>
+            </button>
+            <button
                 v-if="canUpdateTasks() && props.task.status === 'done'"
                 :aria-label="'Mark Task ' + props.task.name + ' as active'"
                 class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
