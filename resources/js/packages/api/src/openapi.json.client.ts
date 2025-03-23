@@ -3965,6 +3965,42 @@ Please note that the access token is only shown in this response and cannot be r
             },
         ],
     },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/tasks/:task',
+        alias: 'getTask',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'task',
+                type: 'Path',
+                schema: z.string(),
+            },
+        ],
+        response: z.object({ data: TaskResource }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
 ]);
 
 export const api = new Zodios('/api', endpoints);

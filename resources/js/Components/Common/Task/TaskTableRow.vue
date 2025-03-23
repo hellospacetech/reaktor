@@ -11,6 +11,7 @@ import { isAllowedToPerformPremiumAction } from '@/utils/billing';
 import EstimatedTimeProgress from '@/packages/ui/src/EstimatedTimeProgress.vue';
 import UpgradeBadge from '@/Components/Common/UpgradeBadge.vue';
 import { formatHumanReadableDuration } from '../../../packages/ui/src/utils/time';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps<{
     task: Task;
@@ -46,9 +47,9 @@ const showTaskEditModal = ref(false);
         <div
             class="whitespace-nowrap min-w-0 flex items-center space-x-2 3xl:pl-12 py-4 pr-3 text-sm font-medium text-white pl-4 sm:pl-6 lg:pl-8 3xl:pl-12">
             <div class="flex items-center space-x-1 overflow-hidden">
-                <span class="truncate max-w-[200px]">
+                <Link :href="route('tasks.show', task.id)" class="truncate max-w-[200px] hover:text-blue-400 hover:underline">
                     {{ task.name }}
-                </span>
+                </Link>
             </div>
         </div>
         <div

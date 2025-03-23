@@ -6,7 +6,7 @@ const page = usePage<{
     };
 }>();
 
-function currentUserHasPermission(permission: string) {
+export function currentUserHasPermission(permission: string) {
     if (Array.isArray(page.props.auth.permissions)) {
         return page.props.auth.permissions.includes(permission);
     }
@@ -137,6 +137,10 @@ export function canViewMemberDetails(): boolean {
 
 export function canViewMemberReports(): boolean {
     return currentUserHasPermission('members:view:reports') || currentUserHasPermission('time-entries:view:all');
+}
+
+export function canViewTaskDetails(): boolean {
+    return currentUserHasPermission('tasks:view:details');
 }
 
 export function hasPermissions(permissions: string[]): boolean {

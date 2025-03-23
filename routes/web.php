@@ -76,6 +76,12 @@ Route::middleware([
         return Inertia::render('Tags');
     })->name('tags');
 
+    Route::get('/tasks/{task}', function (string $task) {
+        return Inertia::render('Tasks/Show', [
+            'id' => $task,
+        ]);
+    })->name('tasks.show');
+
     Route::get('/import', function () {
         return Inertia::render('Import');
     })->name('import');

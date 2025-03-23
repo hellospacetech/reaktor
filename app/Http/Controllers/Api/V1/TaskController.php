@@ -69,6 +69,42 @@ class TaskController extends Controller
     }
 
     /**
+     * Get task details
+     *
+     * @throws AuthorizationException
+     *
+     * @operationId getTask
+     */
+    public function show(Organization $organization, Task $task): JsonResource
+    {
+        $hasViewPermission = $this->hasPermission($organization, 'tasks:view');
+        $hasViewDetailsPermission = $this->hasPermission($organization, 'tasks:view:details');
+        
+        if (!$hasViewPermission && !$hasViewDetailsPermission) {
+            throw new AuthorizationException('You do not have permission to view task details');
+        }
+        
+        if ($task->organization_id !== $organization->id) {
+            throw new AuthorizationException('Task does not belong to organization');
+        }
+        
+        // Eğer detay gösterme izni yoksa, sadece basit görevleri görebilir kullanıcı
+        $canViewAllTasks = $this->hasPermission($organization, 'tasks:view:all');
+        if (!$canViewAllTasks) {
+            $user = $this->user();
+            $isVisible = Task::where('id', $task->id)
+                ->visibleByEmployee($user)
+                ->exists();
+            
+            if (!$isVisible) {
+                throw new AuthorizationException('You do not have permission to view this task');
+            }
+        }
+        
+        return new TaskResource($task);
+    }
+
+    /**
      * Create task
      *
      * @throws AuthorizationException

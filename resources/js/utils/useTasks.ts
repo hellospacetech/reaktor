@@ -7,6 +7,7 @@ import { useNotificationsStore } from '@/utils/notification';
 
 export const useTasksStore = defineStore('tasks', () => {
     const tasks = ref<Task[]>(reactive([]));
+
     const { handleApiRequestNotifications } = useNotificationsStore();
 
     async function fetchTasks() {
@@ -98,6 +99,25 @@ export const useTasksStore = defineStore('tasks', () => {
             await fetchTasks();
         }
     }
+    
+    async function getTask(taskId: string) {
+        const organizationId = getCurrentOrganizationId();
+        if (organizationId) {
+            const response = await handleApiRequestNotifications(
+                () =>
+                    api.getTask({
+                        params: {
+                            organization: organizationId,
+                            task: taskId,
+                        },
+                    }),
+                'Task fetched successfully',
+                'Failed to fetch task'
+            );
+            return response?.data;
+        }
+        return null;
+    }
 
     return {
         tasks,
@@ -106,5 +126,6 @@ export const useTasksStore = defineStore('tasks', () => {
         updateTaskStatus,
         createTask,
         deleteTask,
+        getTask
     };
 });
