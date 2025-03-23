@@ -81,8 +81,20 @@ onUnmounted(() => {
 });
 
 // Component mount edildiğinde üye detaylarını yükle
-onMounted(async () => {
+onMounted(() => {
+  // Store'u temizle 
+  memberStore.clear();
+  
+  // Üye detaylarını ve banka hesaplarını yükle
   memberStore.fetchMemberDetail(memberIdValue.value);
+  memberStore.fetchMemberBankAccounts(memberIdValue.value);
+  
+  // Aktif taba göre ilgili verileri yükle
+  if (activeTab.value === 'projects') {
+    memberStore.fetchMemberProjects(memberIdValue.value);
+  } else if (activeTab.value === 'time-entries' && canViewMemberReports()) {
+    memberStore.fetchMemberTimeEntries(memberIdValue.value, startDate.value, endDate.value);
+  }
 });
 
 function isActiveTab(tab: string) {
@@ -177,6 +189,72 @@ function isActiveTab(tab: string) {
               <div class="sm:col-span-1">
                 <dt class="text-sm font-medium text-muted">Katılım Tarihi</dt>
                 <dd class="mt-1 text-sm text-white">{{ formattedMemberSince }}</dd>
+              </div>
+              
+              <!-- Banka Bilgileri -->
+              <div class="sm:col-span-2 mt-4">
+                <dt class="text-sm font-medium text-muted">Banka Bilgileri</dt>
+                
+                <!-- Yükleniyor durumu -->
+                <dd v-if="memberStore.loading.bankAccounts" class="mt-2">
+                  <p class="text-sm text-muted">Banka bilgileri yükleniyor...</p>
+                </dd>
+                
+                <!-- Hata durumu -->
+                <dd v-else-if="memberStore.error.bankAccounts" class="mt-2">
+                  <p class="text-sm text-red-400">{{ memberStore.error.bankAccounts }}</p>
+                  <button 
+                    @click="memberStore.fetchMemberBankAccounts(memberIdValue)" 
+                    class="mt-2 px-3 py-1 bg-default-background-active rounded text-xs hover:bg-card-background-active"
+                  >
+                    Yeniden Dene
+                  </button>
+                </dd>
+                
+                <!-- Banka hesapları listesi -->
+                <dd v-else-if="memberStore.memberBankAccounts.length > 0" class="mt-2">
+                  <div class="space-y-3">
+                    <div v-for="account in memberStore.memberBankAccounts" :key="account.id" 
+                         class="border border-card-border bg-default-background rounded-md p-3">
+                      <div class="flex items-start gap-2">
+                        <div v-if="account.bank && account.bank.logo_path" class="flex-shrink-0 w-8 h-8">
+                          <img :src="'/' + account.bank.logo_path" :alt="account.bank.name" class="w-full h-full object-contain" />
+                        </div>
+                        <div class="flex-grow">
+                          <div class="flex items-center gap-2">
+                            <h4 class="text-sm font-medium text-white">{{ account.bank?.name || 'Banka' }}</h4>
+                            <span v-if="account.is_default" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-900 text-primary-100">
+                              Varsayılan
+                            </span>
+                          </div>
+                          <div class="mt-1 grid grid-cols-1 gap-y-1 text-xs">
+                            <div v-if="account.account_name" class="flex justify-between">
+                              <span class="text-muted">Hesap Adı:</span>
+                              <span class="text-white">{{ account.account_name }}</span>
+                            </div>
+                            <div v-if="account.iban" class="flex justify-between">
+                              <span class="text-muted">IBAN:</span>
+                              <span class="text-white font-mono">{{ account.iban }}</span>
+                            </div>
+                            <div v-if="account.account_number" class="flex justify-between">
+                              <span class="text-muted">Hesap No:</span>
+                              <span class="text-white font-mono">{{ account.account_number }}</span>
+                            </div>
+                            <div v-if="account.branch_code" class="flex justify-between">
+                              <span class="text-muted">Şube Kodu:</span>
+                              <span class="text-white font-mono">{{ account.branch_code }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </dd>
+                
+                <!-- Veri yok durumu -->
+                <dd v-else class="mt-2">
+                  <p class="text-sm text-muted">Bu üyenin kayıtlı banka hesabı bulunmuyor.</p>
+                </dd>
               </div>
             </dl>
           </div>

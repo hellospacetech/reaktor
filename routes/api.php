@@ -56,6 +56,7 @@ Route::prefix('v1')->name('v1.')->group(static function (): void {
             Route::get('/members/{member}/details', [MemberController::class, 'showDetails'])->name('show-details');
             Route::get('/members/{member}/time-entries', [MemberController::class, 'memberTimeEntries'])->name('member-time-entries');
             Route::get('/members/{member}/projects', [MemberController::class, 'memberProjects'])->name('member-projects');
+            Route::get('/members/{member}/bank-accounts', [MemberController::class, 'memberBankAccounts'])->name('bank-accounts');
         });
 
         // User routes

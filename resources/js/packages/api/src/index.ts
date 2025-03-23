@@ -111,6 +111,11 @@ export type MemberTimeEntriesResponse = ZodiosResponseByAlias<
     'getMemberTimeEntries'
 >;
 
+export type MemberBankAccountsResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberBankAccounts'
+>;
+
 export type UpdateMemberBody = ZodiosBodyByAlias<SolidTimeApi, 'updateMember'>;
 
 export type InviteMemberBody = ZodiosBodyByAlias<SolidTimeApi, 'invite'>;

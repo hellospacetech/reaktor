@@ -3908,6 +3908,63 @@ Please note that the access token is only shown in this response and cannot be r
             },
         ],
     },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/bank-accounts',
+        alias: 'getMemberBankAccounts',
+        description: 'Get member bank accounts',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            }
+        ],
+        response: z.array(
+            z.object({
+                id: z.string(),
+                user_id: z.string(),
+                bank_id: z.string(),
+                account_name: z.string().nullable(),
+                account_number: z.string().nullable(),
+                iban: z.string().nullable(),
+                branch_code: z.string().nullable(),
+                is_default: z.boolean(),
+                is_active: z.boolean(),
+                created_at: z.string().nullable(),
+                updated_at: z.string().nullable(),
+                bank: z.object({
+                    id: z.string(),
+                    name: z.string(),
+                    short_name: z.string().nullable(),
+                    logo_path: z.string().nullable()
+                }).nullable()
+            })
+        ),
+        errors: [
+            {
+                status: 401,
+                description: `Not authenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
 ]);
 
 export const api = new Zodios('/api', endpoints);

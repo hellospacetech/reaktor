@@ -19,7 +19,7 @@
                             <div class="flex items-center gap-4">
                                 <div v-if="account.bank.logo_path" class="flex-shrink-0">
                                     <img
-                                        :src="account.bank.logo_path"
+                                        :src="'/' + account.bank.logo_path"
                                         :alt="account.bank.name"
                                         class="h-10 w-auto object-contain"
                                     />
@@ -302,7 +302,7 @@
                     <div v-if="currentAccount" class="mt-4 font-medium text-white">
                         <div class="flex items-center gap-3">
                             <img v-if="currentAccount.bank.logo_path" 
-                                 :src="currentAccount.bank.logo_path" 
+                                 :src="'/' + currentAccount.bank.logo_path" 
                                  :alt="currentAccount.bank.name" 
                                  class="h-8 w-auto object-contain" />
                             <div>

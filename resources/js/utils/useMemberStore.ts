@@ -3,24 +3,27 @@ import { defineStore } from 'pinia';
 import { getCurrentOrganizationId } from './useUser';
 import { useNotificationsStore } from './notification';
 import { api } from '@/packages/api/src';
-import { MemberDetailResponse, MemberProjectsResponse, MemberTimeEntriesResponse } from '@/packages/api/src';
+import { MemberDetailResponse, MemberProjectsResponse, MemberTimeEntriesResponse, MemberBankAccountsResponse } from '@/packages/api/src';
 
 export const useMemberStore = defineStore('member', () => {
   // State tanımları
   const memberDetail = ref<any>(null);
   const memberProjects = ref<any[]>([]);
   const memberTimeEntries = ref<any[]>([]);
+  const memberBankAccounts = ref<any[]>([]);
   
   const loading = reactive({
     detail: false,
     projects: false,
-    timeEntries: false
+    timeEntries: false,
+    bankAccounts: false
   });
   
   const error = reactive({
     detail: null as string | null,
     projects: null as string | null,
-    timeEntries: null as string | null
+    timeEntries: null as string | null,
+    bankAccounts: null as string | null
   });
 
   // Bildirimleri yönetmek için
@@ -241,12 +244,83 @@ export const useMemberStore = defineStore('member', () => {
   }
 
   /**
+   * Üyenin banka hesaplarını getirir
+   * @param memberId - Üye ID'si
+   */
+  async function fetchMemberBankAccounts(memberId: string) {
+    // ID'yi temizle
+    const cleanMemberId = extractMemberId(memberId);
+    
+    loading.bankAccounts = true;
+    error.bankAccounts = null;
+    
+    const organization = getCurrentOrganizationId();
+    if (!organization) {
+      error.bankAccounts = "Organizasyon bilgisi bulunamadı";
+      loading.bankAccounts = false;
+      return;
+    }
+    
+    // İstek öncesi log
+    console.log('Üye banka hesapları isteği yapılıyor:', {
+      endpoint: `/api/v1/organizations/${organization}/members/${cleanMemberId}/bank-accounts`,
+      time: new Date().toISOString(),
+      memberId: cleanMemberId
+    });
+    
+    try {
+      const response = await handleApiRequestNotifications<MemberBankAccountsResponse>(
+        () => api.getMemberBankAccounts({
+          params: { 
+            organization,
+            member: cleanMemberId
+          }
+        }),
+        undefined,
+        'Banka hesapları yüklenirken bir hata oluştu'
+      );
+      
+      // TypeScript hatalarını önlemek için as any kullanıyoruz
+      // API gerçekte { data: [...] } şeklinde yanıt veriyor
+      const apiResponse = response as any;
+      
+      // Başarılı istek sonrası log
+      console.log('Üye banka hesapları isteği tamamlandı:', {
+        status: 'success',
+        time: new Date().toISOString(),
+        memberId: cleanMemberId,
+        accountCount: apiResponse?.data?.length || 0,
+        rawResponse: response // Tüm yanıtı loglayalım
+      });
+      
+      // API response.data içinde geliyor, bunu kullanmalıyız
+      memberBankAccounts.value = apiResponse?.data || [];
+      
+      console.log('Banka hesapları yüklendi:', memberBankAccounts.value);
+    } catch (err: any) {
+      // Hata durumunda log
+      console.log('Üye banka hesapları isteği başarısız:', {
+        status: 'error',
+        time: new Date().toISOString(),
+        memberId: cleanMemberId,
+        error: err.message
+      });
+      
+      error.bankAccounts = err.message || "Banka hesapları yüklenirken bir hata oluştu";
+      console.error("API hatası:", err);
+    } finally {
+      loading.bankAccounts = false;
+    }
+  }
+
+  /**
    * Tüm verileri temizler
    */
   function clear() {
     memberDetail.value = null;
     memberProjects.value = [];
     memberTimeEntries.value = [];
+    memberBankAccounts.value = [];
   }
 
   return {
@@ -254,6 +328,7 @@ export const useMemberStore = defineStore('member', () => {
     memberDetail,
     memberProjects,
     memberTimeEntries,
+    memberBankAccounts,
     loading,
     error,
     
@@ -261,6 +336,7 @@ export const useMemberStore = defineStore('member', () => {
     fetchMemberDetail,
     fetchMemberProjects,
     fetchMemberTimeEntries,
+    fetchMemberBankAccounts,
     clear
   };
 }); 

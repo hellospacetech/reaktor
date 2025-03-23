@@ -37,6 +37,7 @@ use App\Http\Resources\V1\TimeEntry\TimeEntryCollection;
 use App\Models\Project;
 use App\Http\Resources\V1\Project\ProjectCollection;
 use App\Http\Resources\V1\Member\MemberProjectCollection;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class MemberController extends Controller
 {
@@ -252,6 +253,30 @@ class MemberController extends Controller
         $timeEntries = $query->paginate(config('app.pagination_per_page_default'));
         
         return new TimeEntryCollection($timeEntries);
+    }
+
+    /**
+     * Belirli bir üyenin banka hesaplarını listeler
+     * 
+     * @param Organization $organization
+     * @param Member $member
+     * @return ResourceCollection
+     * 
+     * @throws AuthorizationException
+     * 
+     * @operationId getMemberBankAccounts
+     */
+    public function memberBankAccounts(Organization $organization, Member $member): ResourceCollection
+    {
+        $this->checkPermission($organization, 'members:view:detailed', $member);
+        
+        $bankAccounts = $member->user->bankAccounts()
+            ->with('bank')
+            ->orderBy('is_default', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        return JsonResource::collection($bankAccounts);
     }
 
     /**
