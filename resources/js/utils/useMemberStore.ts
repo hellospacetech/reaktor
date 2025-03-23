@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { getCurrentOrganizationId } from './useUser';
 import { useNotificationsStore } from './notification';
 import { api } from '@/packages/api/src';
+import { MemberDetailResponse, MemberProjectsResponse, MemberTimeEntriesResponse } from '@/packages/api/src';
 
 export const useMemberStore = defineStore('member', () => {
   // State tanımları
@@ -71,7 +72,7 @@ export const useMemberStore = defineStore('member', () => {
     });
     
     try {
-      const response = await handleApiRequestNotifications(
+      const response = await handleApiRequestNotifications<MemberDetailResponse>(
         () => api.getMemberDetails({
           params: { 
             organization,
@@ -133,7 +134,7 @@ export const useMemberStore = defineStore('member', () => {
     });
     
     try {
-      const response = await handleApiRequestNotifications(
+      const response = await handleApiRequestNotifications<MemberProjectsResponse>(
         () => api.getMemberProjects({
           params: { 
             organization,
@@ -149,10 +150,10 @@ export const useMemberStore = defineStore('member', () => {
         status: 'success',
         time: new Date().toISOString(),
         memberId: cleanMemberId,
-        projectCount: response?.data?.data?.length || 0
+        projectCount: response?.data?.length || 0
       });
       
-      memberProjects.value = response?.data?.data || [];
+      memberProjects.value = response?.data || [];
     } catch (err: any) {
       // Hata durumunda log
       console.log('Üye projeleri isteği başarısız:', {
@@ -199,13 +200,15 @@ export const useMemberStore = defineStore('member', () => {
     });
     
     try {
-      const response = await handleApiRequestNotifications(
+      const response = await handleApiRequestNotifications<MemberTimeEntriesResponse>(
         () => api.getMemberTimeEntries({
           params: { 
             organization,
-            member: cleanMemberId,
-            start_date: startDate,
-            end_date: endDate
+            member: cleanMemberId
+          },
+          queries: {
+            start: startDate,
+            end: endDate
           }
         }),
         undefined,
@@ -217,10 +220,10 @@ export const useMemberStore = defineStore('member', () => {
         status: 'success',
         time: new Date().toISOString(),
         memberId: cleanMemberId,
-        entriesCount: response?.data?.data?.length || 0
+        entriesCount: response?.data?.length || 0
       });
       
-      memberTimeEntries.value = response?.data?.data || [];
+      memberTimeEntries.value = response?.data || [];
     } catch (err: any) {
       // Hata durumunda log
       console.log('Üye zaman kayıtları isteği başarısız:', {
