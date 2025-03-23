@@ -66,13 +66,7 @@ export const useMemberStore = defineStore('member', () => {
       loading.detail = false;
       return;
     }
-    
-    // İstek öncesi log - Doğru endpoint yolu
-    console.log('Üye detay isteği yapılıyor:', {
-      endpoint: `/api/v1/organizations/${organization}/members/${cleanMemberId}/details`,
-      time: new Date().toISOString(),
-      memberId: cleanMemberId
-    });
+ 
     
     try {
       const response = await handleApiRequestNotifications<MemberDetailResponse>(
@@ -261,12 +255,7 @@ export const useMemberStore = defineStore('member', () => {
       return;
     }
     
-    // İstek öncesi log
-    console.log('Üye banka hesapları isteği yapılıyor:', {
-      endpoint: `/api/v1/organizations/${organization}/members/${cleanMemberId}/bank-accounts`,
-      time: new Date().toISOString(),
-      memberId: cleanMemberId
-    });
+
     
     try {
       const response = await handleApiRequestNotifications<MemberBankAccountsResponse>(
@@ -284,19 +273,10 @@ export const useMemberStore = defineStore('member', () => {
       // API gerçekte { data: [...] } şeklinde yanıt veriyor
       const apiResponse = response as any;
       
-      // Başarılı istek sonrası log
-      console.log('Üye banka hesapları isteği tamamlandı:', {
-        status: 'success',
-        time: new Date().toISOString(),
-        memberId: cleanMemberId,
-        accountCount: apiResponse?.data?.length || 0,
-        rawResponse: response // Tüm yanıtı loglayalım
-      });
       
       // API response.data içinde geliyor, bunu kullanmalıyız
       memberBankAccounts.value = apiResponse?.data || [];
       
-      console.log('Banka hesapları yüklendi:', memberBankAccounts.value);
     } catch (err: any) {
       // Hata durumunda log
       console.log('Üye banka hesapları isteği başarısız:', {

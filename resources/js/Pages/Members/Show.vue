@@ -7,9 +7,31 @@ import TabBar from '@/Components/Common/TabBar/TabBar.vue';
 import TabBarItem from '@/Components/Common/TabBar/TabBarItem.vue';
 import { canViewMemberReports } from '@/utils/permissions';
 import { Link } from '@inertiajs/vue3';
-import { ChevronRightIcon } from '@heroicons/vue/20/solid';
+import { ChevronRightIcon, ClipboardDocumentIcon, CheckIcon } from '@heroicons/vue/20/solid';
 import { formatDate, calculateDuration } from '@/utils/dateUtils';
 import { useMemberStore } from '@/utils/useMemberStore';
+
+// IBAN formatla (TR12 3456 7890 1234 5678 9012 34 şeklinde)
+function formatIban(iban: string): string {
+  if (!iban) return '';
+  return iban.replace(/(.{4})/g, '$1 ').trim();
+}
+
+// IBAN kopyalama işlemi
+const copiedIban = ref<string | null>(null);
+function copyIbanToClipboard(iban: string) {
+  const cleanIban = iban.replace(/\s/g, ''); // Boşlukları temizle
+  navigator.clipboard.writeText(cleanIban)
+    .then(() => {
+      copiedIban.value = iban;
+      setTimeout(() => {
+        copiedIban.value = null;
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('IBAN kopyalama hatası:', err);
+    });
+}
 
 const props = defineProps<{
   memberId: string;
@@ -213,36 +235,44 @@ function isActiveTab(tab: string) {
                 
                 <!-- Banka hesapları listesi -->
                 <dd v-else-if="memberStore.memberBankAccounts.length > 0" class="mt-2">
-                  <div class="space-y-3">
+                  <div class="space-y-4">
                     <div v-for="account in memberStore.memberBankAccounts" :key="account.id" 
-                         class="border border-card-border bg-default-background rounded-md p-3">
-                      <div class="flex items-start gap-2">
-                        <div v-if="account.bank && account.bank.logo_path" class="flex-shrink-0 w-8 h-8">
-                          <img :src="'/' + account.bank.logo_path" :alt="account.bank.name" class="w-full h-full object-contain" />
+                         class="bg-card-background rounded-lg p-4 border border-card-border shadow-sm transition-all hover:shadow-md">
+                      <div class="flex items-center gap-4">
+                        <div v-if="account.bank && account.bank.logo_path" class="flex-shrink-0 w-12 h-12 bg-default-background rounded-md p-1 flex items-center justify-center">
+                          <img :src="'/' + account.bank.logo_path" :alt="account.bank.name" class="w-10 h-10 object-contain" />
                         </div>
                         <div class="flex-grow">
-                          <div class="flex items-center gap-2">
+                          <div class="flex items-center gap-2 mb-1">
                             <h4 class="text-sm font-medium text-white">{{ account.bank?.name || 'Banka' }}</h4>
-                            <span v-if="account.is_default" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-900 text-primary-100">
+                            <span v-if="account.is_default" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary text-white">
                               Varsayılan
                             </span>
                           </div>
-                          <div class="mt-1 grid grid-cols-1 gap-y-1 text-xs">
-                            <div v-if="account.account_name" class="flex justify-between">
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4">
+                            <div v-if="account.account_name" class="text-xs">
                               <span class="text-muted">Hesap Adı:</span>
-                              <span class="text-white">{{ account.account_name }}</span>
+                              <span class="text-white ml-1 font-medium">{{ account.account_name }}</span>
                             </div>
-                            <div v-if="account.iban" class="flex justify-between">
+                            <div v-if="account.iban" class="text-xs flex items-center">
                               <span class="text-muted">IBAN:</span>
-                              <span class="text-white font-mono">{{ account.iban }}</span>
+                              <span class="text-white ml-1 font-mono flex-1">{{ account.iban }}</span>
+                              <button 
+                                @click="copyIbanToClipboard(account.iban)" 
+                                class="ml-2 p-1 rounded-md bg-default-background hover:bg-default-background-active transition-colors" 
+                                title="IBAN'ı Kopyala"
+                              >
+                                <CheckIcon v-if="copiedIban === account.iban" class="h-4 w-4 text-green-500" />
+                                <ClipboardDocumentIcon v-else class="h-4 w-4 text-muted hover:text-white" />
+                              </button>
                             </div>
-                            <div v-if="account.account_number" class="flex justify-between">
+                            <div v-if="account.account_number" class="text-xs">
                               <span class="text-muted">Hesap No:</span>
-                              <span class="text-white font-mono">{{ account.account_number }}</span>
+                              <span class="text-white ml-1 font-mono">{{ account.account_number }}</span>
                             </div>
-                            <div v-if="account.branch_code" class="flex justify-between">
+                            <div v-if="account.branch_code" class="text-xs">
                               <span class="text-muted">Şube Kodu:</span>
-                              <span class="text-white font-mono">{{ account.branch_code }}</span>
+                              <span class="text-white ml-1 font-mono">{{ account.branch_code }}</span>
                             </div>
                           </div>
                         </div>
@@ -251,9 +281,9 @@ function isActiveTab(tab: string) {
                   </div>
                 </dd>
                 
-                <!-- Veri yok durumu -->
+                <!-- Hesap yoksa -->
                 <dd v-else class="mt-2">
-                  <p class="text-sm text-muted">Bu üyenin kayıtlı banka hesabı bulunmuyor.</p>
+                  <p class="text-sm text-muted bg-card-background rounded-lg p-4 text-center">Henüz banka hesabı bulunmuyor.</p>
                 </dd>
               </div>
             </dl>
