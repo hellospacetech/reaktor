@@ -80,6 +80,7 @@ class TaskController extends Controller
         $this->checkPermission($organization, 'tasks:create');
         $task = new Task;
         $task->name = $request->input('name');
+        $task->description = $request->input('description');
         $task->project_id = $request->input('project_id');
         
         // Status değerini ata
@@ -111,6 +112,7 @@ class TaskController extends Controller
         
         // Genel güncelleme işlemleri
         $task->name = $request->input('name');
+        $task->description = $request->input('description');
         if ($this->canAccessPremiumFeatures($organization) && $request->has('estimated_time')) {
             $task->estimated_time = $request->getEstimatedTime();
         }

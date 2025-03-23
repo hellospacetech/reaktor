@@ -36,6 +36,11 @@ class TaskUpdateRequest extends FormRequest
                     return $builder->where('project_id', '=', $this->task->project_id);
                 })->ignore($this->task?->getKey())->withCustomTranslation('validation.task_name_already_exists'),
             ],
+            'description' => [
+                'nullable',
+                'string',
+                'max:5000',
+            ],
             'status' => [
                 'string',
                 'in:' . implode(',', TaskStatus::getValues()),
@@ -62,5 +67,10 @@ class TaskUpdateRequest extends FormRequest
         assert($this->has('status'));
 
         return $this->input('status');
+    }
+    
+    public function getDescription(): ?string
+    {
+        return $this->input('description');
     }
 }

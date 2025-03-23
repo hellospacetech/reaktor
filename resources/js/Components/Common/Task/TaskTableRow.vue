@@ -44,10 +44,12 @@ const showTaskEditModal = ref(false);
 <template>
     <TableRow>
         <div
-            class="whitespace-nowrap min-w-0 flex items-center space-x-5 3xl:pl-12 py-4 pr-3 text-sm font-medium text-white pl-4 sm:pl-6 lg:pl-8 3xl:pl-12">
-            <span class="overflow-ellipsis overflow-hidden">
-                {{ task.name }}
-            </span>
+            class="whitespace-nowrap min-w-0 flex items-center space-x-2 3xl:pl-12 py-4 pr-3 text-sm font-medium text-white pl-4 sm:pl-6 lg:pl-8 3xl:pl-12">
+            <div class="flex items-center space-x-1 overflow-hidden">
+                <span class="truncate max-w-[200px]">
+                    {{ task.name }}
+                </span>
+            </div>
         </div>
         <div
             class="whitespace-nowrap px-3 py-4 text-sm text-muted flex space-x-1 items-center font-medium">

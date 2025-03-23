@@ -24,6 +24,7 @@ use App\Models\Concerns\HasTaskStatus;
 /**
  * @property string $id
  * @property string $name
+ * @property string|null $description
  * @property string $status
  * @property string $project_id
  * @property string $organization_id
@@ -51,12 +52,27 @@ class Task extends Model implements AuditableContract
     use HasTaskStatus;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'project_id',
+        'organization_id',
+        'estimated_time',
+        'status',
+    ];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
     protected $casts = [
         'name' => 'string',
+        'description' => 'string',
         'estimated_time' => 'integer',
         'done_at' => 'datetime',
         'status' => TaskStatus::class,
