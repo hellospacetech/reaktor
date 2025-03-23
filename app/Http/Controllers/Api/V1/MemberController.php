@@ -36,6 +36,7 @@ use App\Models\TimeEntry;
 use App\Http\Resources\V1\TimeEntry\TimeEntryCollection;
 use App\Models\Project;
 use App\Http\Resources\V1\Project\ProjectCollection;
+use App\Http\Resources\V1\Member\MemberProjectCollection;
 
 class MemberController extends Controller
 {
@@ -254,28 +255,25 @@ class MemberController extends Controller
     }
 
     /**
-     * Belirli bir üyenin projelerini listeler
-     * 
-     * @param Organization $organization
-     * @param Member $member
-     * @return JsonResource
-     * 
-     * @throws AuthorizationException
-     * 
+     * Get projects for a member.
+     *
+     * @param \App\Models\Organization $organization
+     * @param \App\Models\Member $member
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
      * @operationId getMemberProjects
      */
-    public function memberProjects(Organization $organization, Member $member): JsonResource
+    public function memberProjects(Organization $organization, Member $member, Request $request): JsonResource
     {
-        $this->checkPermission($organization, 'members:view:detailed', $member);
-        
-        $projects = Project::query()
-            ->whereHas('members', function ($query) use ($member) {
-                $query->where('member_id', $member->id);
-            })
+        $this->checkPermission($organization, 'members:view:projects', $member);
+
+        // Pivot bilgilerini de içerecek şekilde projeleri getir
+        $projects = $member->projects()
             ->with(['client'])
-            ->orderBy('name')
             ->get();
-        
-        return new ProjectCollection($projects);
+
+        return new MemberProjectCollection($projects, true);
     }
 }

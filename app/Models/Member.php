@@ -77,4 +77,14 @@ class Member extends JetstreamMembership implements AuditableContract
     {
         return $this->hasMany(ProjectMember::class, 'member_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_members', 'member_id', 'project_id')
+            ->withPivot(['billable_rate', 'id', 'created_at', 'updated_at'])
+            ->withTimestamps();
+    }
 }
