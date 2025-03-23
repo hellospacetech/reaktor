@@ -17,9 +17,16 @@ export function refreshStores() {
     useTagsStore().fetchTags();
     useCurrentTimeEntryStore().fetchCurrentTimeEntry();
     useTimeEntriesStore().patchTimeEntries();
-    if (canViewMembers()) {
+    
+    // Üye detay sayfasında değilsek tüm üyeleri yükle
+    // window.location.pathname ile mevcut URL'yi kontrol ediyoruz
+    const currentPath = window.location.pathname;
+    const isMemberDetailPage = currentPath.startsWith('/members/') && currentPath !== '/members';
+    
+    if (canViewMembers() && !isMemberDetailPage) {
         useMembersStore().fetchMembers();
     }
+    
     if (canViewClients()) {
         useClientsStore().fetchClients();
     }

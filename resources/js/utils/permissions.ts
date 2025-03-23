@@ -130,3 +130,15 @@ export function canDeleteReport() {
 export function canViewAllTimeEntries() {
     return currentUserHasPermission('time-entries:view:all');
 }
+
+export function canViewMemberDetails(): boolean {
+    return currentUserHasPermission('members:view:detailed') || currentUserHasPermission('members:view');
+}
+
+export function canViewMemberReports(): boolean {
+    return currentUserHasPermission('members:view:reports') || currentUserHasPermission('time-entries:view:all');
+}
+
+export function hasPermissions(permissions: string[]): boolean {
+    return permissions.some(permission => currentUserHasPermission(permission));
+}

@@ -3764,6 +3764,150 @@ Please note that the access token is only shown in this response and cannot be r
             },
         ],
     },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/details',
+        alias: 'getMemberDetails',
+        description: 'Get member details',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            },
+        ],
+        response: z.object({ data: MemberResource }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/time-entries',
+        alias: 'getMemberTimeEntries',
+        description: 'Get member time entries',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'start',
+                type: 'Query',
+                schema: z.string().optional(),
+            },
+            {
+                name: 'end', 
+                type: 'Query',
+                schema: z.string().optional(),
+            },
+            {
+                name: 'page',
+                type: 'Query',
+                schema: z.number().optional(),
+            },
+            {
+                name: 'per_page',
+                type: 'Query',
+                schema: z.number().optional(),
+            },
+        ],
+        response: z.object({
+            data: z.array(TimeEntryResource),
+            meta: z.object({
+                current_page: z.number(),
+                from: z.number().nullable(),
+                last_page: z.number(),
+                path: z.string(),
+                per_page: z.number(),
+                to: z.number().nullable(),
+                total: z.number(),
+            }).passthrough(),
+        }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/projects',
+        alias: 'getMemberProjects',
+        description: 'Get member projects',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            }
+        ],
+        response: z.object({
+            data: z.array(ProjectResource)
+        }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
 ]);
 
 export const api = new Zodios('/api', endpoints);

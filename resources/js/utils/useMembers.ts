@@ -74,5 +74,40 @@ export const useMembersStore = defineStore('members', () => {
         return membersResponse.value?.data || [];
     });
 
-    return { members, fetchMembers, removeMember, updateMember };
+    async function fetchMemberDetails(memberId: string) {
+        const organization = getCurrentOrganizationId();
+        if (organization) {
+            return await handleApiRequestNotifications(
+                () => api.getMemberDetails({
+                    params: {
+                        organization: organization,
+                        member: memberId
+                    }
+                }),
+                undefined,
+                'Üye detayları alınamadı'
+            );
+        }
+        return null;
+    }
+
+    async function fetchMemberTimeEntries(memberId: string, params: any = {}) {
+        const organization = getCurrentOrganizationId();
+        if (organization) {
+            return await handleApiRequestNotifications(
+                () => api.getMemberTimeEntries({
+                    params: {
+                        organization: organization,
+                        member: memberId,
+                        ...params
+                    }
+                }),
+                undefined, 
+                'Üye zaman kayıtları alınamadı'
+            );
+        }
+        return null;
+    }
+
+    return { members, fetchMembers, removeMember, updateMember, fetchMemberDetails, fetchMemberTimeEntries };
 });

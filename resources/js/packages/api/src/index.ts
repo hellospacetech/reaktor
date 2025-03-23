@@ -96,6 +96,21 @@ export type MemberIndexResponse = ZodiosResponseByAlias<
 >;
 export type Member = MemberIndexResponse['data'][0];
 
+export type MemberDetailResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberDetails'
+>;
+
+export type MemberProjectsResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberProjects'
+>;
+
+export type MemberTimeEntriesResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberTimeEntries'
+>;
+
 export type UpdateMemberBody = ZodiosBodyByAlias<SolidTimeApi, 'updateMember'>;
 
 export type InviteMemberBody = ZodiosBodyByAlias<SolidTimeApi, 'invite'>;
