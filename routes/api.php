@@ -53,6 +53,9 @@ Route::prefix('v1')->name('v1.')->group(static function (): void {
             Route::post('/members/{member}/invite-placeholder', [MemberController::class, 'invitePlaceholder'])->name('invite-placeholder');
             Route::post('/members/{member}/make-placeholder', [MemberController::class, 'makePlaceholder'])->name('make-placeholder');
             Route::post('member/{member}/merge-into', [MemberController::class, 'mergeInto'])->name('merge-into');
+            Route::get('/members/{member}/details', [MemberController::class, 'showDetails'])->name('show-details');
+            Route::get('/members/{member}/time-entries', [MemberController::class, 'memberTimeEntries'])->name('member-time-entries');
+            Route::get('/members/{member}/projects', [MemberController::class, 'memberProjects'])->name('member-projects');
         });
 
         // User routes

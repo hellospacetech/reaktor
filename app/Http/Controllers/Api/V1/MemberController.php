@@ -31,6 +31,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\TimeEntry;
+use App\Http\Resources\V1\TimeEntry\TimeEntryCollection;
+use App\Models\Project;
+use App\Http\Resources\V1\Project\ProjectCollection;
 
 class MemberController extends Controller
 {
@@ -187,5 +192,90 @@ class MemberController extends Controller
         $invitationService->inviteUser($organization, $user->email, Role::Employee);
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * Belirli bir üyenin detaylarını gösterir
+     * 
+     * @param Organization $organization
+     * @param Member $member
+     * @return JsonResource
+     * 
+     * @throws AuthorizationException
+     * 
+     * @operationId getMemberDetails
+     */
+    public function showDetails(Organization $organization, Member $member): JsonResource
+    {
+        $this->checkPermission($organization, 'members:view:detailed', $member);
+        
+        $memberData = $member->load(['user', 'user.projectMembers.project']);
+        
+        return new MemberResource($memberData);
+    }
+
+    /**
+     * Belirli bir üyenin zaman kayıtlarını listeler
+     * 
+     * @param Organization $organization
+     * @param Member $member
+     * @param Request $request
+     * @return JsonResource
+     * 
+     * @throws AuthorizationException
+     * 
+     * @operationId getMemberTimeEntries
+     */
+    public function memberTimeEntries(Organization $organization, Member $member, Request $request): JsonResource
+    {
+        $this->checkPermission($organization, 'members:view:reports', $member);
+        
+        // Filtreleme parametreleri
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        $query = TimeEntry::query()
+            ->where('user_id', $member->user_id)
+            ->whereBelongsTo($organization, 'organization')
+            ->with(['project', 'task', 'tags'])
+            ->orderBy('created_at', 'desc');
+        
+        if ($startDate) {
+            $query->whereDate('start_time', '>=', $startDate);
+        }
+        
+        if ($endDate) {
+            $query->whereDate('start_time', '<=', $endDate);
+        }
+        
+        $timeEntries = $query->paginate(config('app.pagination_per_page_default'));
+        
+        return new TimeEntryCollection($timeEntries);
+    }
+
+    /**
+     * Belirli bir üyenin projelerini listeler
+     * 
+     * @param Organization $organization
+     * @param Member $member
+     * @return JsonResource
+     * 
+     * @throws AuthorizationException
+     * 
+     * @operationId getMemberProjects
+     */
+    public function memberProjects(Organization $organization, Member $member): JsonResource
+    {
+        $this->checkPermission($organization, 'members:view:detailed', $member);
+        
+        $projects = Project::query()
+            ->whereHas('members', function ($query) use ($member) {
+                $query->where('member_id', $member->id);
+            })
+            ->with(['client'])
+            ->orderBy('name')
+            ->get();
+        
+        return new ProjectCollection($projects);
     }
 }
