@@ -148,15 +148,22 @@ class TaskController extends Controller
             $task->done_at = Carbon::now();
         }
         elseif ($newStatus === TaskStatus::Active) {
-            // Active olarak işaretlemek için 'tasks:update' izni gerekir
-            $this->checkPermission($organization, 'tasks:update', $task);
+            // Active durumuna geçiş için tasks:update VEYA tasks:mark-as-internal-test izinlerinden 
+            // herhangi birine sahip olma kontrolü
+            $hasUpdatePermission = $this->hasPermission($organization, 'tasks:update');
+            $hasMarkAsInternalTestPermission = $this->hasPermission($organization, 'tasks:mark-as-internal-test');
+            
+            if (!$hasUpdatePermission && !$hasMarkAsInternalTestPermission) {
+                throw new AuthorizationException('You do not have permission to change task status to active');
+            }
+            
             $task->status = TaskStatus::Active();
             $task->done_at = null;
         }
         else {
             throw new AuthorizationException('Invalid status transition');
         }
-        
+     
         $task->save();
         
         return new TaskResource($task);

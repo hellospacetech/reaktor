@@ -21,21 +21,21 @@ function deleteTask() {
 }
 
 function markTaskAsDone() {
-    let newStatus;
-    
     if (props.task.status === 'internal_test') {
-        newStatus = 'done';
-    } else if (props.task.status === 'done') {
-        newStatus = 'active';
-    } else {
-        return; // Geçersiz durum geçişi
+        useTasksStore().updateTaskStatus(props.task.id, 'done');
     }
-    
-    useTasksStore().updateTaskStatus(props.task.id, newStatus);
+}
+
+function markTaskAsActive() {
+    if (props.task.status === 'internal_test' || props.task.status === 'done') {
+        useTasksStore().updateTaskStatus(props.task.id, 'active');
+    }
 }
 
 function markTaskAsInternalTest() {
-    useTasksStore().updateTaskStatus(props.task.id, 'internal_test');
+    if (props.task.status === 'active') {
+        useTasksStore().updateTaskStatus(props.task.id, 'internal_test');
+    }
 }
 
 const showTaskEditModal = ref(false);
@@ -87,6 +87,7 @@ const showTaskEditModal = ref(false);
                 :task="task"
                 @internal-test="markTaskAsInternalTest"
                 @done="markTaskAsDone"
+                @active="markTaskAsActive"
                 @edit="showTaskEditModal = true"
                 @delete="deleteTask"></TaskMoreOptionsDropdown>
         </div>

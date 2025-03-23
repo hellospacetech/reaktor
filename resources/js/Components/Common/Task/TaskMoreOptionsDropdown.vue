@@ -13,6 +13,7 @@ const emit = defineEmits<{
     edit: [];
     done: [];
     'internal-test': [];
+    active: [];
 }>();
 const props = defineProps<{
     task: Task;
@@ -49,10 +50,18 @@ const props = defineProps<{
                 <span>Mark as Done</span>
             </button>
             <button
+                v-if="canMarkTaskAsInternalTest() && props.task.status === 'internal_test'"
+                :aria-label="'Mark Task ' + props.task.name + ' as active'"
+                class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
+                @click="emit('active')">
+                <CheckCircleIcon class="w-5 text-icon-active"></CheckCircleIcon>
+                <span>Mark as Active</span>
+            </button>
+            <button
                 v-if="canUpdateTasks() && props.task.status === 'done'"
                 :aria-label="'Mark Task ' + props.task.name + ' as active'"
                 class="flex items-center space-x-3 w-full px-3 py-2.5 text-start text-sm font-medium leading-5 text-white hover:bg-card-background-active focus:outline-none focus:bg-card-background-active transition duration-150 ease-in-out"
-                @click="emit('done')">
+                @click="emit('active')">
                 <CheckCircleIcon class="w-5 text-icon-active"></CheckCircleIcon>
                 <span>Mark as Active</span>
             </button>
