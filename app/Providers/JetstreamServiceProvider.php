@@ -234,12 +234,13 @@ class JetstreamServiceProvider extends ServiceProvider
             'tags:view',
             'tasks:view',
             'tasks:mark-as-internal-test',
+            'tasks:create',
             'time-entries:view:own',
             'time-entries:create:own',
             'time-entries:update:own',
             'time-entries:delete:own',
             'organizations:view',
-        ])->description('Employees have the ability to read, create, and update their own time entries and they can see the projects that they are members of.');
+        ])->description('Employees have the ability to read, create, and update their own time entries, create tasks, and they can see the projects that they are members of.');
 
         Jetstream::role(Role::Placeholder->value, 'Placeholder', [
         ])->description('Placeholders are used for importing data. They cannot log in and have no permissions.');
