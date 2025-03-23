@@ -6,6 +6,7 @@ import SectionBorder from '@/Components/SectionBorder.vue';
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue';
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
+import BankAccountsForm from '@/Pages/Profile/Partials/BankAccountsForm.vue';
 import { usePage } from '@inertiajs/vue3';
 import type { User } from '@/types/models';
 import type { Session } from '@/types/jetstream';
@@ -51,6 +52,10 @@ const page = usePage<{
 
                     <SectionBorder />
                 </div>
+
+                <BankAccountsForm class="mt-10 sm:mt-0" />
+                
+                <SectionBorder />
 
                 <div
                     v-if="

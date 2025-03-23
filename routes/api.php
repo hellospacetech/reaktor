@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\UserMembershipController;
 use App\Http\Controllers\Api\V1\UserTimeEntryController;
+use App\Http\Controllers\UserBankAccountController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -157,6 +158,16 @@ Route::prefix('v1')->name('v1.')->group(static function (): void {
         // Export routes
         Route::name('export.')->prefix('/organizations/{organization}')->group(static function (): void {
             Route::post('/export', [ExportController::class, 'export'])->name('export');
+        });
+
+        // User bank account routes
+        Route::name('bank-accounts.')->group(static function (): void {
+            Route::get('/banks', [UserBankAccountController::class, 'banks'])->name('banks');
+            Route::get('/users/me/bank-accounts', [UserBankAccountController::class, 'index'])->name('index');
+            Route::post('/users/me/bank-accounts', [UserBankAccountController::class, 'store'])->name('store');
+            Route::get('/users/me/bank-accounts/{id}', [UserBankAccountController::class, 'show'])->name('show');
+            Route::put('/users/me/bank-accounts/{id}', [UserBankAccountController::class, 'update'])->name('update');
+            Route::delete('/users/me/bank-accounts/{id}', [UserBankAccountController::class, 'destroy'])->name('destroy');
         });
     });
 
