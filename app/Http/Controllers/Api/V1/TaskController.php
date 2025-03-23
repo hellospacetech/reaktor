@@ -136,10 +136,14 @@ class TaskController extends Controller
         
         $newStatus = $request->getStatus();
         
-        if ($newStatus === TaskStatus::InternalTest && $task->status->is(TaskStatus::Active)) {
+        if ($newStatus === TaskStatus::InternalTest && ($task->status->is(TaskStatus::Active) || $task->status->is(TaskStatus::Done))) {
             // Dahili test olarak işaretleme izni
             $this->checkPermission($organization, 'tasks:mark-as-internal-test');
             $task->status = TaskStatus::InternalTest();
+            // Eğer task tamamlanmış durumundan geliyorsa, done_at değerini sıfırlayalım
+            if ($task->status->is(TaskStatus::Done)) {
+                $task->done_at = null;
+            }
         } 
         elseif ($newStatus === TaskStatus::Done && $task->status->is(TaskStatus::InternalTest)) {
             // Tamamlandı olarak işaretleme izni

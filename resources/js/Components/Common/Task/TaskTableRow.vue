@@ -33,7 +33,7 @@ function markTaskAsActive() {
 }
 
 function markTaskAsInternalTest() {
-    if (props.task.status === 'active') {
+    if (props.task.status === 'active' || props.task.status === 'done') {
         useTasksStore().updateTaskStatus(props.task.id, 'internal_test');
     }
 }

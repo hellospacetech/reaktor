@@ -28,7 +28,7 @@ trait HasTaskStatus
      */
     public function canMarkAsInternalTest(): bool
     {
-        return $this->status && $this->status->is(TaskStatus::Active);
+        return $this->status && ($this->status->is(TaskStatus::Active) || $this->status->is(TaskStatus::Done));
     }
 
     /**
