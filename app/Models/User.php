@@ -50,6 +50,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
  * @property string|null $current_team_id
  * @property Collection<int, Organization> $organizations
  * @property Collection<int, TimeEntry> $timeEntries
+ * @property Collection<int, UserBankAccount> $bankAccounts
  * @property Member $membership
  *
  * @method HasMany<Organization> ownedTeams()
@@ -229,5 +230,25 @@ class User extends Authenticatable implements AuditableContract, FilamentUser, M
                 $query->whereKey($organization->getKey());
             });
         });
+    }
+
+    /**
+     * Kullanıcının banka hesapları
+     *
+     * @return HasMany<UserBankAccount>
+     */
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(UserBankAccount::class);
+    }
+
+    /**
+     * Kullanıcının varsayılan banka hesabı
+     *
+     * @return UserBankAccount|null
+     */
+    public function getDefaultBankAccountAttribute(): ?UserBankAccount
+    {
+        return $this->bankAccounts()->where('is_default', true)->first();
     }
 }

@@ -66,9 +66,21 @@ Route::middleware([
         ]);
     })->name('members');
 
+    Route::get('/members/{member}', function (string $member) {
+        return Inertia::render('Members/Show', [
+            'memberId' => $member,
+        ]);
+    })->name('members.show');
+
     Route::get('/tags', function () {
         return Inertia::render('Tags');
     })->name('tags');
+
+    Route::get('/tasks/{task}', function (string $task) {
+        return Inertia::render('Tasks/Show', [
+            'id' => $task,
+        ]);
+    })->name('tasks.show');
 
     Route::get('/import', function () {
         return Inertia::render('Import');

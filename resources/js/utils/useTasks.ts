@@ -2,11 +2,12 @@ import { defineStore } from 'pinia';
 import { getCurrentOrganizationId } from '@/utils/useUser';
 import { api } from '@/packages/api/src';
 import { reactive, ref } from 'vue';
-import type { CreateTaskBody, Task, UpdateTaskBody } from '@/packages/api/src';
+import type { CreateTaskBody, Task, UpdateTaskBody, UpdateTaskStatusBody } from '@/packages/api/src';
 import { useNotificationsStore } from '@/utils/notification';
 
 export const useTasksStore = defineStore('tasks', () => {
     const tasks = ref<Task[]>(reactive([]));
+
     const { handleApiRequestNotifications } = useNotificationsStore();
 
     async function fetchTasks() {
@@ -41,6 +42,24 @@ export const useTasksStore = defineStore('tasks', () => {
                     }),
                 'Task updated successfully',
                 'Failed to update task'
+            );
+            await fetchTasks();
+        }
+    }
+    
+    async function updateTaskStatus(taskId: string, status: string) {
+        const organizationId = getCurrentOrganizationId();
+        if (organizationId) {
+            await handleApiRequestNotifications(
+                () =>
+                    api.updateTaskStatus({ status }, {
+                        params: {
+                            task: taskId,
+                            organization: organizationId,
+                        },
+                    }),
+                'Task status updated successfully',
+                'Failed to update task status'
             );
             await fetchTasks();
         }
@@ -80,12 +99,33 @@ export const useTasksStore = defineStore('tasks', () => {
             await fetchTasks();
         }
     }
+    
+    async function getTask(taskId: string) {
+        const organizationId = getCurrentOrganizationId();
+        if (organizationId) {
+            const response = await handleApiRequestNotifications(
+                () =>
+                    api.getTask({
+                        params: {
+                            organization: organizationId,
+                            task: taskId,
+                        },
+                    }),
+                'Task fetched successfully',
+                'Failed to fetch task'
+            );
+            return response?.data;
+        }
+        return null;
+    }
 
     return {
         tasks,
         fetchTasks,
         updateTask,
+        updateTaskStatus,
         createTask,
         deleteTask,
+        getTask
     };
 });

@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\UserMembershipController;
 use App\Http\Controllers\Api\V1\UserTimeEntryController;
+use App\Http\Controllers\UserBankAccountController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -52,6 +53,10 @@ Route::prefix('v1')->name('v1.')->group(static function (): void {
             Route::post('/members/{member}/invite-placeholder', [MemberController::class, 'invitePlaceholder'])->name('invite-placeholder');
             Route::post('/members/{member}/make-placeholder', [MemberController::class, 'makePlaceholder'])->name('make-placeholder');
             Route::post('member/{member}/merge-into', [MemberController::class, 'mergeInto'])->name('merge-into');
+            Route::get('/members/{member}/details', [MemberController::class, 'showDetails'])->name('show-details');
+            Route::get('/members/{member}/time-entries', [MemberController::class, 'memberTimeEntries'])->name('member-time-entries');
+            Route::get('/members/{member}/projects', [MemberController::class, 'memberProjects'])->name('member-projects');
+            Route::get('/members/{member}/bank-accounts', [MemberController::class, 'memberBankAccounts'])->name('bank-accounts');
         });
 
         // User routes
@@ -142,8 +147,10 @@ Route::prefix('v1')->name('v1.')->group(static function (): void {
         // Task routes
         Route::name('tasks.')->prefix('/organizations/{organization}')->group(static function (): void {
             Route::get('/tasks', [TaskController::class, 'index'])->name('index');
+            Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('show');
             Route::post('/tasks', [TaskController::class, 'store'])->name('store')->middleware('check-organization-blocked');
             Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('update')->middleware('check-organization-blocked');
+            Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('update-status')->middleware('check-organization-blocked');
             Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('destroy');
         });
 
@@ -156,6 +163,16 @@ Route::prefix('v1')->name('v1.')->group(static function (): void {
         // Export routes
         Route::name('export.')->prefix('/organizations/{organization}')->group(static function (): void {
             Route::post('/export', [ExportController::class, 'export'])->name('export');
+        });
+
+        // User bank account routes
+        Route::name('bank-accounts.')->group(static function (): void {
+            Route::get('/banks', [UserBankAccountController::class, 'banks'])->name('banks');
+            Route::get('/users/me/bank-accounts', [UserBankAccountController::class, 'index'])->name('index');
+            Route::post('/users/me/bank-accounts', [UserBankAccountController::class, 'store'])->name('store');
+            Route::get('/users/me/bank-accounts/{id}', [UserBankAccountController::class, 'show'])->name('show');
+            Route::put('/users/me/bank-accounts/{id}', [UserBankAccountController::class, 'update'])->name('update');
+            Route::delete('/users/me/bank-accounts/{id}', [UserBankAccountController::class, 'destroy'])->name('destroy');
         });
     });
 

@@ -18,10 +18,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Korridor\LaravelComputedAttributes\ComputedAttributes;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use App\Enums\TaskStatus;
+use App\Models\Concerns\HasTaskStatus;
 
 /**
  * @property string $id
  * @property string $name
+ * @property string|null $description
+ * @property string $status
  * @property string $project_id
  * @property string $organization_id
  * @property Carbon|null $done_at
@@ -45,6 +49,21 @@ class Task extends Model implements AuditableContract
     use HasFactory;
 
     use HasUuids;
+    use HasTaskStatus;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'project_id',
+        'organization_id',
+        'estimated_time',
+        'status',
+    ];
 
     /**
      * The attributes that should be cast.
@@ -53,8 +72,10 @@ class Task extends Model implements AuditableContract
      */
     protected $casts = [
         'name' => 'string',
+        'description' => 'string',
         'estimated_time' => 'integer',
         'done_at' => 'datetime',
+        'status' => TaskStatus::class,
     ];
 
     /**
@@ -153,15 +174,5 @@ class Task extends Model implements AuditableContract
             /** @var Builder<Project> $builder */
             return $builder->visibleByEmployee($user);
         });
-    }
-
-    /**
-     * @return Attribute<bool, never>
-     */
-    public function isDone(): Attribute
-    {
-        return Attribute::make(
-            get: fn (mixed $value, array $attributes) => isset($attributes['done_at']),
-        );
     }
 }

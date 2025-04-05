@@ -23,6 +23,7 @@ class TaskFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
+            'description' => $this->faker->optional(0.7)->paragraph(),
             'project_id' => Project::factory(),
             'organization_id' => Organization::factory(),
             'done_at' => null,

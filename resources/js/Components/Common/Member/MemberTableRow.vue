@@ -16,6 +16,7 @@ import { getOrganizationCurrencyString } from '@/utils/money';
 import { formatCents } from '@/packages/ui/src/utils/money';
 import MemberMergeModal from "@/Components/Common/Member/MemberMergeModal.vue";
 import MemberMakePlaceholderModal from "@/Components/Common/Member/MemberMakePlaceholderModal.vue";
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps<{
     member: Member;
@@ -54,23 +55,27 @@ const userHasValidMailAddress = computed(() => {
     return !props.member.email.endsWith('@solidtime-import.test');
 })
 
+function viewMemberDetails() {
+    router.visit(route('members.show', props.member.id));
+}
 </script>
 
 <template>
     <TableRow>
         <div
-            class="whitespace-nowrap flex items-center space-x-5 py-4 pr-3 text-sm font-medium text-white pl-4 sm:pl-6 lg:pl-8 3xl:pl-12">
+            @click="viewMemberDetails"
+            class="whitespace-nowrap flex items-center space-x-5 py-4 pr-3 text-sm font-medium text-white pl-4 sm:pl-6 lg:pl-8 3xl:pl-12 cursor-pointer hover:bg-card-background-active">
             <span>
                 {{ member.name }}
             </span>
         </div>
-        <div class="whitespace-nowrap px-3 py-4 text-sm text-muted">
+        <div @click="viewMemberDetails" class="whitespace-nowrap px-3 py-4 text-sm text-muted cursor-pointer hover:bg-card-background-active">
             {{ member.email }}
         </div>
-        <div class="whitespace-nowrap px-3 py-4 text-sm text-muted">
+        <div @click="viewMemberDetails" class="whitespace-nowrap px-3 py-4 text-sm text-muted cursor-pointer hover:bg-card-background-active">
             {{ capitalizeFirstLetter(member.role) }}
         </div>
-        <div class="whitespace-nowrap px-3 py-4 text-sm text-muted">
+        <div @click="viewMemberDetails" class="whitespace-nowrap px-3 py-4 text-sm text-muted cursor-pointer hover:bg-card-background-active">
             {{
                 member.billable_rate
                     ? formatCents(
@@ -81,7 +86,8 @@ const userHasValidMailAddress = computed(() => {
             }}
         </div>
         <div
-            class="whitespace-nowrap px-3 py-4 text-sm text-muted flex space-x-1 items-center font-medium">
+            @click="viewMemberDetails"
+            class="whitespace-nowrap px-3 py-4 text-sm text-muted flex space-x-1 items-center font-medium cursor-pointer hover:bg-card-background-active">
             <CheckCircleIcon
                 v-if="member.is_placeholder === false"
                 class="w-5"></CheckCircleIcon>

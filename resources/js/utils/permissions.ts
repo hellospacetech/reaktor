@@ -6,7 +6,7 @@ const page = usePage<{
     };
 }>();
 
-function currentUserHasPermission(permission: string) {
+export function currentUserHasPermission(permission: string) {
     if (Array.isArray(page.props.auth.permissions)) {
         return page.props.auth.permissions.includes(permission);
     }
@@ -47,6 +47,14 @@ export function canUpdateTasks() {
 
 export function canDeleteTasks() {
     return currentUserHasPermission('tasks:delete');
+}
+
+export function canMarkTaskAsInternalTest() {
+    return currentUserHasPermission('tasks:mark-as-internal-test');
+}
+
+export function canMarkTaskAsDone() {
+    return currentUserHasPermission('tasks:mark-as-done');
 }
 
 export function canCreateClients() {
@@ -121,4 +129,20 @@ export function canDeleteReport() {
 
 export function canViewAllTimeEntries() {
     return currentUserHasPermission('time-entries:view:all');
+}
+
+export function canViewMemberDetails(): boolean {
+    return currentUserHasPermission('members:view:detailed') || currentUserHasPermission('members:view');
+}
+
+export function canViewMemberReports(): boolean {
+    return currentUserHasPermission('members:view:reports') || currentUserHasPermission('time-entries:view:all');
+}
+
+export function canViewTaskDetails(): boolean {
+    return currentUserHasPermission('tasks:view:details');
+}
+
+export function hasPermissions(permissions: string[]): boolean {
+    return permissions.some(permission => currentUserHasPermission(permission));
 }

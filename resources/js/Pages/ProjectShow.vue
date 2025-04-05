@@ -58,7 +58,7 @@ onMounted(() => {
 
 const showEditProjectModal = ref(false);
 
-const activeTab = ref<'active' | 'done'>('active');
+const activeTab = ref<'active' | 'internal_test' | 'done'>('active');
 
 function isActiveTab(tab: string) {
     return activeTab.value === tab;
@@ -69,9 +69,12 @@ const { tasks } = storeToRefs(useTasksStore());
 const shownTasks = computed(() => {
     return tasks.value.filter((task) => {
         if (activeTab.value === 'active') {
-            return task.project_id === projectId && !task.is_done;
+            return task.project_id === projectId && task.status === 'active';
+        } else if (activeTab.value === 'internal_test') {
+            return task.project_id === projectId && task.status === 'internal_test';
+        } else { // done tab
+            return task.project_id === projectId && task.status === 'done';
         }
-        return task.project_id === projectId && task.is_done;
     });
 });
 </script>
@@ -154,6 +157,11 @@ const shownTasks = computed(() => {
                                             :active="isActiveTab('active')"
                                             @click="activeTab = 'active'"
                                             >Active
+                                        </TabBarItem>
+                                        <TabBarItem
+                                            :active="isActiveTab('internal_test')"
+                                            @click="activeTab = 'internal_test'"
+                                            >Test
                                         </TabBarItem>
                                         <TabBarItem
                                             :active="isActiveTab('done')"

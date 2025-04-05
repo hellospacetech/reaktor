@@ -35,6 +35,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->deleteAll();
 
+        // Bankaları yükle
+        $this->call([
+            BanksSeeder::class,
+        ]);
+
         app(ClientRepository::class)->create(
             null,
             'desktop',

@@ -7,6 +7,7 @@
     "require": {
         "php": "8.3.* || 8.4.*",
         "ext-zip": "*",
+        "bensampo/laravel-enum": "^6.12",
         "brick/money": "^0.10.0",
         "datomatic/laravel-enum-helper": "^2.0.0",
         "dedoc/scramble": "^0.12.2",

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\V1\Task;
 
+use App\Enums\TaskStatus;
 use App\Models\Organization;
 use App\Models\Project;
 use App\Models\Task;
@@ -36,12 +37,22 @@ class TaskStoreRequest extends FormRequest
                     return $builder->where('project_id', '=', $this->input('project_id'));
                 })->withCustomTranslation('validation.task_name_already_exists'),
             ],
+            'description' => [
+                'nullable',
+                'string',
+                'max:5000',
+            ],
             'project_id' => [
                 'required',
                 ExistsEloquent::make(Project::class, null, function (Builder $builder): Builder {
                     /** @var Builder<Project> $builder */
                     return $builder->whereBelongsTo($this->organization, 'organization');
                 })->uuid(),
+            ],
+            'status' => [
+                'sometimes',
+                'string',
+                'in:' . implode(',', TaskStatus::getValues()),
             ],
             // Estimated time in seconds
             'estimated_time' => [
@@ -58,5 +69,15 @@ class TaskStoreRequest extends FormRequest
         $input = $this->input('estimated_time');
 
         return $input !== null && $input !== 0 ? (int) $this->input('estimated_time') : null;
+    }
+    
+    public function getStatus(): ?string
+    {
+        return $this->input('status');
+    }
+    
+    public function getDescription(): ?string
+    {
+        return $this->input('description');
     }
 }

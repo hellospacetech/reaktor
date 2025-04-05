@@ -82,6 +82,8 @@ export type Task = TaskIndexResponse['data'][0];
 
 export type UpdateTaskBody = ZodiosBodyByAlias<SolidTimeApi, 'updateTask'>;
 
+export type UpdateTaskStatusBody = ZodiosBodyByAlias<SolidTimeApi, 'updateTaskStatus'>;
+
 export type ClientIndexResponse = ZodiosResponseByAlias<
     SolidTimeApi,
     'getClients'
@@ -93,6 +95,26 @@ export type MemberIndexResponse = ZodiosResponseByAlias<
     'getMembers'
 >;
 export type Member = MemberIndexResponse['data'][0];
+
+export type MemberDetailResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberDetails'
+>;
+
+export type MemberProjectsResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberProjects'
+>;
+
+export type MemberTimeEntriesResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberTimeEntries'
+>;
+
+export type MemberBankAccountsResponse = ZodiosResponseByAlias<
+    SolidTimeApi,
+    'getMemberBankAccounts'
+>;
 
 export type UpdateMemberBody = ZodiosBodyByAlias<SolidTimeApi, 'updateMember'>;
 

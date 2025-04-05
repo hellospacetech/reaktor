@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Korridor\LaravelModelValidationRules\Rules\ExistsEloquent;
+use App\Enums\TaskStatus;
 
 /**
  * @property Organization $organization Organization from model binding
@@ -42,11 +43,20 @@ class TaskIndexRequest extends FormRequest
                 'string',
                 'in:true,false,all',
             ],
+            'status' => [
+                'string',
+                'in:' . implode(',', TaskStatus::getValues()),
+            ],
         ];
     }
 
     public function getFilterDone(): string
     {
         return $this->input('done', 'false');
+    }
+    
+    public function getFilterStatus(): ?string
+    {
+        return $this->input('status');
     }
 }

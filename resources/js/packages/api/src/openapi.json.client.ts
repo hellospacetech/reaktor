@@ -2588,6 +2588,57 @@ const endpoints = makeApi([
         ],
     },
     {
+        method: 'patch',
+        path: '/v1/organizations/:organization/tasks/:task/status',
+        alias: 'updateTaskStatus',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'body',
+                type: 'Body',
+                schema: z.object({ status: z.string() }),
+            },
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'task',
+                type: 'Path',
+                schema: z.string(),
+            },
+        ],
+        response: z.object({ data: TaskResource }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 422,
+                description: `Validation error`,
+                schema: z
+                    .object({
+                        message: z.string(),
+                        errors: z.record(z.array(z.string())),
+                    })
+                    .passthrough(),
+            },
+        ],
+    },
+    {
         method: 'delete',
         path: '/v1/organizations/:organization/tasks/:task',
         alias: 'deleteTask',
@@ -3704,6 +3755,243 @@ Please note that the access token is only shown in this response and cannot be r
             {
                 status: 401,
                 description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/details',
+        alias: 'getMemberDetails',
+        description: 'Get member details',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            },
+        ],
+        response: z.object({ data: MemberResource }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/time-entries',
+        alias: 'getMemberTimeEntries',
+        description: 'Get member time entries',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'start',
+                type: 'Query',
+                schema: z.string().optional(),
+            },
+            {
+                name: 'end', 
+                type: 'Query',
+                schema: z.string().optional(),
+            },
+            {
+                name: 'page',
+                type: 'Query',
+                schema: z.number().optional(),
+            },
+            {
+                name: 'per_page',
+                type: 'Query',
+                schema: z.number().optional(),
+            },
+        ],
+        response: z.object({
+            data: z.array(TimeEntryResource),
+            meta: z.object({
+                current_page: z.number(),
+                from: z.number().nullable(),
+                last_page: z.number(),
+                path: z.string(),
+                per_page: z.number(),
+                to: z.number().nullable(),
+                total: z.number(),
+            }).passthrough(),
+        }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/projects',
+        alias: 'getMemberProjects',
+        description: 'Get member projects',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            }
+        ],
+        response: z.object({
+            data: z.array(ProjectResource)
+        }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/members/:member/bank-accounts',
+        alias: 'getMemberBankAccounts',
+        description: 'Get member bank accounts',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'member',
+                type: 'Path',
+                schema: z.string(),
+            }
+        ],
+        response: z.array(
+            z.object({
+                id: z.string(),
+                user_id: z.string(),
+                bank_id: z.string(),
+                account_name: z.string().nullable(),
+                account_number: z.string().nullable(),
+                iban: z.string().nullable(),
+                branch_code: z.string().nullable(),
+                is_default: z.boolean(),
+                is_active: z.boolean(),
+                created_at: z.string().nullable(),
+                updated_at: z.string().nullable(),
+                bank: z.object({
+                    id: z.string(),
+                    name: z.string(),
+                    short_name: z.string().nullable(),
+                    logo_path: z.string().nullable()
+                }).nullable()
+            })
+        ),
+        errors: [
+            {
+                status: 401,
+                description: `Not authenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 404,
+                description: `Not found`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+        ],
+    },
+    {
+        method: 'get',
+        path: '/v1/organizations/:organization/tasks/:task',
+        alias: 'getTask',
+        requestFormat: 'json',
+        parameters: [
+            {
+                name: 'organization',
+                type: 'Path',
+                schema: z.string(),
+            },
+            {
+                name: 'task',
+                type: 'Path',
+                schema: z.string(),
+            },
+        ],
+        response: z.object({ data: TaskResource }).passthrough(),
+        errors: [
+            {
+                status: 401,
+                description: `Unauthenticated`,
+                schema: z.object({ message: z.string() }).passthrough(),
+            },
+            {
+                status: 403,
+                description: `Authorization error`,
                 schema: z.object({ message: z.string() }).passthrough(),
             },
             {
