@@ -254,6 +254,10 @@ function isActiveTab(tab: string) {
                               <span class="text-muted">Hesap Adı:</span>
                               <span class="text-white ml-1 font-medium">{{ account.account_name }}</span>
                             </div>
+                            <div v-if="account.account_holder_name" class="text-xs">
+                              <span class="text-muted">Hesap Sahibi:</span>
+                              <span class="text-white ml-1 font-medium">{{ account.account_holder_name }}</span>
+                            </div>
                             <div v-if="account.iban" class="text-xs flex items-center">
                               <span class="text-muted">IBAN:</span>
                               <span class="text-white ml-1 font-mono flex-1">{{ account.iban }}</span>

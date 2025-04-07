@@ -26,6 +26,7 @@ class UserBankAccountRequest extends FormRequest
         $rules = [
             'bank_id' => ['required', 'exists:banks,id'],
             'account_name' => ['nullable', 'string', 'max:255'],
+            'account_holder_name' => ['nullable', 'string', 'max:255'],
             'account_number' => ['nullable', 'string', 'max:50'],
             'iban' => ['required', 'string', 'max:50'],
             'branch_code' => ['nullable', 'string', 'max:20'],
@@ -48,6 +49,7 @@ class UserBankAccountRequest extends FormRequest
             'bank_id.exists' => 'Seçilen banka geçerli değil.',
             'iban.required' => 'IBAN numarası zorunludur.',
             'iban.max' => 'IBAN numarası en fazla 50 karakter olabilir.',
+            'account_holder_name.max' => 'Hesap sahibi adı soyadı en fazla 255 karakter olabilir.',
         ];
     }
 }

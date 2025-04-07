@@ -22,6 +22,7 @@ class UserBankAccount extends Model
         'user_id',
         'bank_id',
         'account_name',
+        'account_holder_name',
         'account_number',
         'iban',
         'branch_code',
