@@ -118,6 +118,18 @@
                         </div>
 
                         <div class="mt-4">
+                            <InputLabel for="account_holder_name" value="Hesap Sahibi Adı Soyadı" />
+                            <TextInput
+                                id="account_holder_name"
+                                v-model="form.account_holder_name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="Örn: Ahmet Yılmaz"
+                            />
+                            <InputError :message="formErrors.account_holder_name" class="mt-2" />
+                        </div>
+
+                        <div class="mt-4">
                             <InputLabel for="iban" value="IBAN" />
                             <TextInput
                                 id="iban"
@@ -223,6 +235,18 @@
                                 placeholder="Örn: Ana İş Hesabım"
                             />
                             <InputError :message="formErrors.account_name" class="mt-2" />
+                        </div>
+
+                        <div class="mt-4">
+                            <InputLabel for="edit_account_holder_name" value="Hesap Sahibi Adı Soyadı" />
+                            <TextInput
+                                id="edit_account_holder_name"
+                                v-model="form.account_holder_name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                placeholder="Örn: Ahmet Yılmaz"
+                            />
+                            <InputError :message="formErrors.account_holder_name" class="mt-2" />
                         </div>
 
                         <div class="mt-4">
@@ -358,6 +382,7 @@ interface BankAccount {
     user_id: string;
     bank_id: string;
     account_name: string | null;
+    account_holder_name: string | null;
     account_number: string | null;
     iban: string;
     branch_code: string | null;
@@ -373,6 +398,7 @@ interface FormErrors {
     iban?: string;
     branch_code?: string;
     is_default?: string;
+    account_holder_name?: string;
     [key: string]: string | undefined;
 }
 
@@ -391,6 +417,7 @@ const formErrors = ref<FormErrors>({});
 const form = reactive({
     bank_id: '',
     account_name: '',
+    account_holder_name: '',
     account_number: '',
     iban: '',
     branch_code: '',
@@ -492,6 +519,7 @@ function closeModal() {
 function resetForm() {
     form.bank_id = '';
     form.account_name = '';
+    form.account_holder_name = '';
     form.account_number = '';
     form.iban = '';
     form.branch_code = '';
@@ -503,6 +531,7 @@ function resetForm() {
 function populateFormWithAccount(account: BankAccount) {
     form.bank_id = account.bank_id;
     form.account_name = account.account_name || '';
+    form.account_holder_name = account.account_holder_name || '';
     form.account_number = account.account_number || '';
     form.iban = account.iban;
     form.branch_code = account.branch_code || '';
